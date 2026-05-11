@@ -22,6 +22,9 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
   useGSAP(() => {
     const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
     if (!cards.length) return;
+    
+    // Initial centering set to avoid jumps
+    gsap.set(cards, { xPercent: -50, yPercent: -50 });
 
     // Orchestration Configuration
     const config = {
@@ -67,6 +70,8 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
       tl.fromTo(card, 
         { 
           opacity: 0,
+          xPercent: -50,
+          yPercent: -50,
           y: fanY + 50,
           x: fanX * 0.5,
           rotation: isEven ? -5 : 5,
@@ -74,6 +79,8 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
         },
         { 
           opacity: 1,
+          xPercent: -50,
+          yPercent: -50,
           y: fanY,
           x: fanX,
           rotation: fanRotation,
@@ -107,7 +114,7 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
         <div className={styles.portalRing} />
         
         {/* Domain Logic: Results Header */}
-        <header className="w-full text-center z-10 px-[--respiro-h] mb-20">
+        <header className="w-full text-center z-10 px-[--respiro-h] mb-12">
           <h2 id="results-title" className="uppercase font-black tracking-[-0.06em] leading-[0.8]">
             <span className={`${styles.titleStaged1} block text-white text-[clamp(3.5rem,8vw,6rem)]`}>Want some</span>
             <span className={`${styles.titleStaged2} block text-[#E5511A] text-[clamp(3.2rem,7.5vw,5.5rem)]`}>proof?</span>
@@ -115,7 +122,7 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
         </header>
 
         {/* Domain Logic: Results Stack */}
-        <div className="relative w-full flex flex-col items-center z-10 px-[--respiro-h] gap-16">
+        <div className="relative w-full flex flex-col items-center z-10 px-[--respiro-h] gap-12">
           <div className="relative w-full max-w-7xl flex justify-center items-center h-[300px]">
             {REVIEWS.map((review, i) => (
               <ResultCard 

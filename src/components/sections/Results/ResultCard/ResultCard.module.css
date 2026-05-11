@@ -2,6 +2,8 @@
   position: absolute;
   width: 400px;
   max-width: 80vw;
+  left: 50%;
+  top: 50%;
   opacity: 0;
   z-index: 1;
   transition: z-index 0.3s step-start;
