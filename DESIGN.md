@@ -19,11 +19,17 @@ Lines do not exist unless they are structural. Separation is achieved through **
 
 ---
 
-## 3. Typography: Authority & Restraint
-Brutalismo Chic uses typography as a structural material, not decoration.
+## 3. Typography: Authority & Restraint (Swiss Grid)
+Brutalismo Chic uses typography as a structural material, following the mathematical ratios of the International Typographic Style (Swiss Grid).
 
-- **Display (Epilogue Black):** Heavy, All-Caps, and tight tracking (-0.05em). It should feel carved into the void.
-- **Body (Space Grotesk):** Functional and clean. Never used as decorative metadata.
+- **Display (Outfit Black 900):** Heavy, All-Caps, and tight tracking (-0.06em). It should feel carved into the void.
+- **Body/Manifesto (Geist Sans 300):** Light and surgical. Used for manifestos and content text.
+- **Technical/Data (Geist Mono 500/700):** Functional and authoritative. Used for technical labels and architecture.
+- **Hierarchy Ratios:**
+    - **72pt (6rem):** The "Mega-Display" for major headings.
+    - **12pt (1rem):** The "Standard Body" for all content text.
+    - **9.6pt (0.8rem):** The "Caption/Metadata" for labels and secondary info.
+- **The Tension Rule:** We avoid intermediate font sizes. The design relies on the brutal contrast between massive titles and surgical body text.
 
 ---
 

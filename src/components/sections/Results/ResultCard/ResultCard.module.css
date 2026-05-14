@@ -40,7 +40,7 @@
 .quoteMark {
   font-size: 2rem;
   color: var(--vx-orange, #E5511A);
-  font-family: serif;
+  font-family: var(--font-main);
   line-height: 0;
   margin-bottom: 0.8rem;
 }
@@ -83,7 +83,7 @@
   }
   
   .text {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
   .metric {

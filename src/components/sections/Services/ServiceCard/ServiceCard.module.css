@@ -91,6 +91,7 @@
 
 .subtitle {
   font-family: var(--font-mono);
+  font-weight: 500;
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.4);
   text-transform: uppercase;
@@ -122,7 +123,8 @@
 
 .listItem {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-weight: 500;
+  font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.85); /* Increased readability */
   text-transform: uppercase;
   letter-spacing: 0.05em;

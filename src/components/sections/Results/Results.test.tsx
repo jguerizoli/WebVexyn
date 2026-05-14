@@ -61,6 +61,7 @@ describe('Results Section', () => {
   });
 
   it('renders the heading text correctly', () => {
+    render(<Results />);
     expect(screen.getByText(/want some/i)).toBeInTheDocument();
     expect(screen.getByText(/proof\?/i)).toBeInTheDocument();
   });

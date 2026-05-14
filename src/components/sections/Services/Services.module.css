@@ -4,7 +4,8 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: 4rem var(--respiro-h) 12rem; /* Aggressively moving content up */
+  justify-content: flex-start;
+  padding: var(--respiro-v-lg) var(--respiro-h);
 }
 
 
@@ -14,13 +15,14 @@
   grid-template-columns: 0.4fr 1.6fr;
   gap: 6rem; 
   width: 100%;
-  align-items: start;
+  flex: 1;
+  align-items: center;
 }
 
 .header {
   position: sticky;
-  top: 2rem; /* Higher up than before */
-  transform: translateY(-3rem); /* Misalignment from the card grid */
+  top: var(--respiro-v-lg);
+  align-self: start;
 }
 
 .sectionTitle {
@@ -38,7 +40,7 @@
 }
 
 .titleLine2 {
-  font-size: clamp(3.2rem, 7.5vw, 5.5rem);
+  font-size: clamp(3.5rem, 8vw, 6rem);
 }
 
 .cardsContainer {

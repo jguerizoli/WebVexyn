@@ -115,9 +115,9 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
         
         {/* Domain Logic: Results Header */}
         <header className="w-full text-center z-10 px-[--respiro-h] mb-12">
-          <h2 id="results-title" className="uppercase font-black tracking-[-0.06em] leading-[0.8]">
-            <span className={`${styles.titleStaged1} block text-white text-[clamp(3.5rem,8vw,6rem)]`}>Want some</span>
-            <span className={`${styles.titleStaged2} block text-[#E5511A] text-[clamp(3.2rem,7.5vw,5.5rem)]`}>proof?</span>
+          <h2 id="results-title" className={styles.title}>
+            <span className={styles.titleStaged1}>Want some</span>
+            <span className={styles.titleStaged2}>proof?</span>
           </h2>
         </header>
 

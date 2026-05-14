@@ -1,7 +1,7 @@
 .button {
   position: relative;
   border-radius: 0;
-  font-weight: 900;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font-family: var(--font-mono);
@@ -12,7 +12,7 @@
   justify-content: center;
   width: fit-content;
   border: none;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
 }
 
 /* Primary Variant: Arancio Argos with Hard Shadow */

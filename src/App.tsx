@@ -36,10 +36,10 @@ function App() {
         <Hero scrollTo={scrollTo} />
         <Services scrollTo={scrollTo} />
         <Results scrollTo={scrollTo} />
-        <section id="partners" style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <section id="partners" style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--respiro-v-lg) var(--respiro-h)' }}>
           <h1>Partners Section</h1>
         </section>
-        <section id="contact-form" style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <section id="contact-form" style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--respiro-v-lg) var(--respiro-h)' }}>
           <h1>Contact Section</h1>
         </section>
       </main>

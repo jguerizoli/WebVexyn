@@ -15,7 +15,7 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding: 4vh 10% 12vh;
+  padding: var(--respiro-v-lg) var(--respiro-h);
 }
 
 .portalRing {
@@ -42,10 +42,11 @@
 }
 
 .title {
-  font-size: clamp(1.5rem, 6vw, 4rem);
-  line-height: 0.9;
+  font-size: clamp(3.5rem, 8vw, 6rem);
+  line-height: 0.8;
   text-transform: uppercase;
-  font-weight: 800;
+  font-weight: 900;
+  letter-spacing: -0.06em;
 }
 
 .title span {
