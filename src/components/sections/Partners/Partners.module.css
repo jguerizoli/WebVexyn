@@ -1,0 +1,51 @@
+.section {
+  width: 100%;
+  min-height: 20vh;
+  padding: var(--respiro-v-lg) 0;
+  background-color: var(--vx-black);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.marqueeWrapper {
+  display: flex;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.marqueeContent {
+  display: flex;
+  flex-shrink: 0;
+  gap: 4rem;
+  padding-right: 4rem;
+}
+
+.partner {
+  font-family: var(--font-main);
+  font-weight: 900;
+  font-size: 8rem;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--vx-white);
+  opacity: 0.1;
+  transition: opacity 0.4s steps(1);
+  letter-spacing: -0.06em;
+}
+
+.partner:hover {
+  opacity: 1;
+  color: var(--vx-orange);
+}
+
+@media (max-width: 768px) {
+  .partner {
+    font-size: 4rem;
+  }
+  .marqueeContent {
+    gap: 2rem;
+    padding-right: 2rem;
+  }
+}
