@@ -47,64 +47,83 @@ function App() {
     setTimeout(() => { ScrollTrigger.refresh(); }, 200);
 
     const getSnapPoints = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       const points: number[] = [];
       
       sections.forEach(id => {
         const st = ScrollTrigger.getById(id);
         if (st) {
-          points.push(st.start);
+          points.push(Math.round(st.start));
+          
+          // CRITICAL FIX: If section is pinned, the "end" of the pin is a valid state
+          if (st.vars.pin) {
+            points.push(Math.round(st.end));
+          }
+
           // If section has internal snap (Services/Results), add those points too
           if (st.vars.snap) {
             const snapVal = typeof st.vars.snap === 'number' ? st.vars.snap : (st.vars.snap as any).snapTo || 0;
             if (snapVal > 0 && snapVal < 1) {
               const steps = Math.round(1 / snapVal);
               for (let i = 1; i < steps; i++) {
-                points.push(st.start + (st.end - st.start) * (i * snapVal));
+                points.push(Math.round(st.start + (st.end - st.start) * (i * snapVal)));
               }
             }
           }
         }
       });
-      return [...new Set(points)].sort((a, b) => a - b);
+
+      const uniqueSorted = [...new Set(points)].sort((a, b) => a - b);
+      console.log("[ScrollManager] Valid Snap Points:", uniqueSorted);
+      return uniqueSorted;
     };
 
     const gotoPoint = (direction: number) => {
       if (isAnimating || isNavigating.current) return;
 
       const points = getSnapPoints();
-      const currentScroll = window.scrollY;
+      const currentScroll = Math.round(window.scrollY);
       
-      // Find where we are in the state list
       let target;
       if (direction > 0) {
-        target = points.find(p => p > currentScroll + 5); // +5 to avoid rounding issues
+        target = points.find(p => p > currentScroll + 15); // Increased margin for safety
       } else {
-        target = [...points].reverse().find(p => p < currentScroll - 5);
+        target = [...points].reverse().find(p => p < currentScroll - 15);
       }
+
+      console.log(`[ScrollManager] Intent: ${direction > 0 ? 'DOWN' : 'UP'} | Current: ${currentScroll} | Target: ${target}`);
 
       if (target !== undefined) {
         isAnimating = true;
+        const cleanup = () => { 
+          isAnimating = false; 
+          isNavigating.current = false;
+          ScrollTrigger.update();
+        };
+
         gsap.to(window, {
           scrollTo: target,
-          duration: 1,
+          duration: 1.1,
           ease: "power3.inOut",
           onStart: () => { isNavigating.current = true; },
-          onComplete: () => { 
-            isAnimating = false; 
-            isNavigating.current = false;
-            ScrollTrigger.update();
-          }
+          onComplete: cleanup,
+          onInterrupt: cleanup,
+          onOverwrite: cleanup
         });
+      } else {
+        console.warn("[ScrollManager] No valid target found in direction:", direction);
       }
     };
 
     const obs = Observer.create({
       type: "wheel,touch,pointer",
       wheelSpeed: -1,
-      onDown: () => gotoPoint(1),
-      onUp: () => gotoPoint(-1),
-      tolerance: 10,
+      onDown: (self) => {
+        if (Math.abs(self.deltaY) > 20) gotoPoint(1);
+      },
+      onUp: (self) => {
+        if (Math.abs(self.deltaY) > 20) gotoPoint(-1);
+      },
+      tolerance: 25,
       preventDefault: true
     });
 
@@ -131,10 +150,12 @@ function App() {
     });
 
     ScrollTrigger.normalizeScroll(true);
+    document.body.classList.add('is-desktop-hijack');
 
     return () => {
       obs.kill();
       ScrollTrigger.normalizeScroll(false);
+      document.body.classList.remove('is-desktop-hijack');
     };
   }, []);
 

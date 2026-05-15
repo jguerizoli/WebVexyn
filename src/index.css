@@ -71,6 +71,20 @@ body {
   font-family: var(--font-body);
 }
 
+body.is-desktop-hijack {
+  overflow: hidden; /* Lock scroll on desktop only */
+}
+
+/* Hide scrollbar for a cleaner look when hijacking is active */
+body.is-desktop-hijack::-webkit-scrollbar {
+  display: none;
+}
+
+body.is-desktop-hijack {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 body.is-navigating {
   pointer-events: none !important;
   cursor: wait !important;
