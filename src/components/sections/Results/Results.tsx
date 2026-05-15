@@ -35,7 +35,7 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
-        id: "social-proof", // Anchor for snapping
+        id: "social-proof-reveal", // Renamed to avoid snap interference
         start: "top 80%",
         toggleActions: "play none none reverse"
       }

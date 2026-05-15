@@ -43,29 +43,47 @@ function App() {
 
     let isAnimating = false;
 
-    // Refresh everything to ensure offsets are perfect
+    // Create Master Anchor Triggers for each section (top top)
+    sections.forEach(id => {
+      const anchorId = `anchor-${id}`;
+      if (!ScrollTrigger.getById(anchorId)) {
+        ScrollTrigger.create({
+          id: anchorId,
+          trigger: `#${id}`,
+          start: "top top",
+          refreshPriority: -1
+        });
+      }
+    });
+
+    // Refresh to ensure offsets are perfect
     setTimeout(() => { ScrollTrigger.refresh(); }, 200);
 
     const getSnapPoints = () => {
       const points: number[] = [];
       
       sections.forEach(id => {
-        const st = ScrollTrigger.getById(id);
-        if (st) {
-          points.push(Math.round(st.start));
-          
-          // CRITICAL FIX: If section is pinned, the "end" of the pin is a valid state
-          if (st.vars.pin) {
-            points.push(Math.round(st.end));
+        const anchor = ScrollTrigger.getById(`anchor-${id}`);
+        const main = ScrollTrigger.getById(id);
+
+        if (anchor) {
+          points.push(Math.round(anchor.start));
+        }
+
+        if (main) {
+          // If the main trigger is pinned, the end of the pin is a valid state
+          if (main.vars.pin) {
+            points.push(Math.round(main.end));
           }
 
           // If section has internal snap (Services/Results), add those points too
-          if (st.vars.snap) {
-            const snapVal = typeof st.vars.snap === 'number' ? st.vars.snap : (st.vars.snap as any).snapTo || 0;
+          if (main.vars.snap) {
+            const snapVal = typeof main.vars.snap === 'number' ? main.vars.snap : (main.vars.snap as any).snapTo || 0;
             if (snapVal > 0 && snapVal < 1) {
               const steps = Math.round(1 / snapVal);
+              const range = main.end - main.start;
               for (let i = 1; i < steps; i++) {
-                points.push(Math.round(st.start + (st.end - st.start) * (i * snapVal)));
+                points.push(Math.round(main.start + range * (i * snapVal)));
               }
             }
           }
