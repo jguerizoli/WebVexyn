@@ -45,8 +45,8 @@
 
 .cardsContainer {
   position: relative;
-  width: 100%;
-  max-width: 900px;
+  width: 100% !important;
+  max-width: 900px !important;
   min-height: 420px;
   height: auto;
   padding: 0;

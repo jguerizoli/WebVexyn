@@ -1,6 +1,7 @@
 .card {
   position: absolute;
-  width: 100%;
+  width: 100% !important;
+  box-sizing: border-box !important;
   height: auto;
   min-height: 420px;
   background: #050505;
