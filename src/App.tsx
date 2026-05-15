@@ -20,9 +20,8 @@ function App() {
   const [activeSection, setActiveSection] = useState('hero');
   const isNavigating = useRef(false);
 
-  // Action 1.1: Global ScrollTrigger & Scroll Normalization
+  // Action 1.1: Global ScrollTrigger Refresh Orchestration
   useEffect(() => {
-    ScrollTrigger.normalizeScroll(true);
     const handleRefresh = () => {
       ScrollTrigger.refresh();
     };
@@ -31,7 +30,6 @@ function App() {
     window.addEventListener('resize', handleRefresh);
 
     return () => {
-      ScrollTrigger.normalizeScroll(false);
       window.removeEventListener('load', handleRefresh);
       window.removeEventListener('resize', handleRefresh);
     };
@@ -41,7 +39,7 @@ function App() {
   useGSAP(() => {
     const sections = ['hero', 'services', 'social-proof', 'partners', 'contact-form'];
     const isMobile = window.innerWidth < 1024;
-    if (isMobile) return;
+    if (isMobile) return; // Keep native scroll on mobile for better accessibility
 
     let isAnimating = false;
 
@@ -63,7 +61,7 @@ function App() {
 
     const getSnapPoints = () => {
       const points: number[] = [];
-      
+
       sections.forEach(id => {
         const anchor = ScrollTrigger.getById(`anchor-${id}`);
         const main = ScrollTrigger.getById(id);
@@ -73,10 +71,12 @@ function App() {
         }
 
         if (main) {
+          // If the main trigger is pinned, the end of the pin is a valid state
           if (main.vars.pin) {
             points.push(Math.round(main.end));
           }
 
+          // If section has internal snap (Services/Results), add those points too
           if (main.vars.snap) {
             const snapVal = typeof main.vars.snap === 'number' ? main.vars.snap : (main.vars.snap as any).snapTo || 0;
             if (snapVal > 0 && snapVal < 1) {
@@ -90,7 +90,8 @@ function App() {
         }
       });
 
-      return [...new Set(points)].sort((a, b) => a - b);
+      const uniqueSorted = [...new Set(points)].sort((a, b) => a - b);
+      return uniqueSorted;
     };
 
     const gotoPoint = (direction: number) => {
@@ -101,23 +102,27 @@ function App() {
       
       let target;
       if (direction > 0) {
-        target = points.find(p => p > currentScroll + 15);
+        // Look for next point with a slightly larger margin to avoid micro-jitter
+        target = points.find(p => p > currentScroll + 20); 
       } else {
-        target = [...points].reverse().find(p => p < currentScroll - 15);
+        target = [...points].reverse().find(p => p < currentScroll - 20);
       }
 
       if (target !== undefined) {
         isAnimating = true;
         isNavigating.current = true;
+        document.body.classList.add('is-navigating');
 
         gsap.to(window, {
-          scrollTo: { y: target, autoKill: false },
-          duration: 1.2,
-          ease: "power4.inOut",
+          scrollTo: target,
+          duration: 1.15, 
+          ease: "expo.out", 
           overwrite: true,
+          onUpdate: () => ScrollTrigger.update(), // Sync internal triggers in real-time
           onComplete: () => { 
             isAnimating = false; 
             isNavigating.current = false;
+            document.body.classList.remove('is-navigating');
             ScrollTrigger.update();
           }
         });
@@ -151,7 +156,7 @@ function App() {
 
       ScrollTrigger.create({
         trigger: `#${id}`,
-        start: "top 40%", 
+        start: "top 40%",
         end: "bottom 40%",
         onToggle: (self) => {
           if (self.isActive && !isNavigating.current) {
@@ -161,12 +166,10 @@ function App() {
       });
     });
 
-    ScrollTrigger.normalizeScroll(true);
     document.body.classList.add('is-desktop-hijack');
 
     return () => {
       obs.kill();
-      ScrollTrigger.normalizeScroll(false);
       document.body.classList.remove('is-desktop-hijack');
     };
   }, []);
@@ -174,12 +177,12 @@ function App() {
   const scrollTo = (id: string) => {
     // Action 1.4: Pre-navigation refresh to ensure pinned offsets are accurate
     ScrollTrigger.refresh();
-    
+
     const element = document.getElementById(id);
     if (!element) return;
 
     const { scrolling } = APP_CONFIG;
-    
+
     // Action 1.2 Refined: Robust cleanup to prevent stuck 'is-navigating' states
     // and ensure ScrollTrigger recalibrates after each navigation
     const cleanup = () => {
@@ -190,9 +193,9 @@ function App() {
 
     gsap.to(window, {
       duration: scrolling.duration,
-      scrollTo: { 
-        y: `#${id}`, 
-        autoKill: scrolling.autoKill 
+      scrollTo: {
+        y: `#${id}`,
+        autoKill: scrolling.autoKill
       },
       ease: scrolling.ease,
       overwrite: true, // Kill existing tweens to avoid state conflicts
