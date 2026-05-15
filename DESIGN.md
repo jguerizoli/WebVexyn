@@ -1,76 +1,74 @@
-# Design System Document: Brutalismo Chic (Pure Form)
+# Design System Specification
 
-## 1. Overview & Creative North Star: "Brutalismo Chic"
-Vexyn opera como uma boutique de **soluções digitais de alto padrão**. Este sistema é a intersecção entre a forma industrial bruta e a precisão editorial de luxo. É uma **Digital Couture Gallery**.
+This document defines the visual and interaction standards for the Vexyn platform, focusing on architectural minimalism, high-contrast aesthetics, and structural precision.
 
-**CRITICAL RULE:** We reject "Fake Tech" decorative noise. Do NOT use coordinates, technical labels (`REF. //`), system version markers, or simulated metadata. The aesthetic must remain clean, surgical, and pure, relying on architectural form and spacing rather than decorative "technical" artifacts.
+## 1. Design Principles
 
----
+The visual language is rooted in the International Typographic Style (Swiss Grid), prioritizing content hierarchy and structural integrity over decorative elements.
 
-## 2. Colors & Surface Logic: The High-Contrast Void
-A paleta permanece disciplinada: **Vexyn Void (#050505)** e **Vexyn Primary (#E5511A)**.
+- **Minimalism**: Elimination of non-functional components.
+- **Precision**: Strict adherence to mathematical grids and typographic ratios.
+- **Contrast**: High visual tension between positive and negative space.
 
-### The "No-Line" Rule (Pure)
-Lines do not exist unless they are structural. Separation is achieved through **Architectural Voids** (large black space). 
+**CORE REQUIREMENT:** Avoid decorative technical artifacts (e.g., coordinates, simulated system labels, or metadata markers). The aesthetic must remain clean and functional.
 
-### Materiality & Texture
-- **The Void:** `#050505` is the primary material.
-- **The Signature Noise:** A very subtle 2-3% "Technical Grain" overlay ensures the surface has the "tooth" of premium paper.
+## 2. Color Palette & Surface Logic
 
----
+### Primary Colors
+- **Main Background**: `#050505` (Deep Black)
+- **Brand Accent**: `#E5511A` (Vexyn Orange)
+- **Secondary Surface**: `#121212` (Dark Grey)
 
-## 3. Typography: Authority & Restraint (Swiss Grid)
-Brutalismo Chic uses typography as a structural material, following the mathematical ratios of the International Typographic Style (Swiss Grid).
+### Surface Texture
+- **Global Grain**: A subtle 2% noise overlay is applied to add material depth to monochromatic surfaces.
+- **Negative Space**: Content separation is achieved through white space (voids) rather than borders or lines whenever possible.
 
-- **Display (Outfit Black 900):** Heavy, All-Caps, and tight tracking (-0.06em). It should feel carved into the void.
-- **Body/Manifesto (Geist Sans 300):** Light and surgical. Used for manifestos and content text.
-- **Technical/Data (Geist Mono 500/700):** Functional and authoritative. Used for technical labels and architecture.
-- **Hierarchy Ratios:**
-    - **72pt (6rem):** The "Mega-Display" for major headings.
-    - **12pt (1rem):** The "Standard Body" for all content text.
-    - **9.6pt (0.8rem):** The "Caption/Metadata" for labels and secondary info.
-- **The Tension Rule:** We avoid intermediate font sizes. The design relies on the brutal contrast between massive titles and surgical body text.
+## 3. Typography (Swiss Grid)
 
----
+Typography is treated as a structural element. The system uses a strict hierarchy based on mathematical ratios.
 
-## 4. Architectural Spacing: The Intentional Void
-Spacing is our primary design tool.
-- **The 4vw Rule:** Use consistent side margins (4vw) to isolate content and maintain the grid.
-- **Balance:** Achieve balance through weight and position, never symmetry.
+### Font Families
+- **Display/Headings**: Outfit (Weight: 900) - Tight tracking (-0.06em), uppercase.
+- **Body Content**: Geist Sans (Weight: 300) - Light weight for maximum legibility in manifestos.
+- **Technical/Labels**: Geist Mono (Weight: 500/700) - Used for metadata and functional UI elements.
 
----
+### Hierarchy Ratios
+- **Mega Display**: 6rem (72pt) - Primary section headings.
+- **Body Standard**: 1rem (12pt) - All descriptive content.
+- **Caption/Metadata**: 0.8rem (9.6pt) - Secondary labels and functional text.
 
-## 5. Kinetic Precision: The Surgical Shutter
-Animations must feel mechanical and precise.
-- **The Shutter Cut:** Use `step-end` or `power4.inOut`. 
-- **No Elasticity:** Precision is key. No bounces.
+## 4. Layout & Spacing
 
----
+### Grid System
+- **Margins**: Consistent 4vw horizontal margins are enforced globally to isolate content blocks.
+- **Vertical Gaps**: Standardized vertical spacing (4vw) between major sections to maintain architectural rhythm.
 
-## 6. Components
+## 5. Motion Design
 
-### Buttons
-- **Radius:** 0px. Always.
-- **Shadow:** Hard 4px block shadow. 
+Animations follow a mechanical, high-performance logic.
 
-### Cards: Structural Blocks
-- **Visuals:** Integrated `Vexyn Void` (#050505) surfaces. 
-- **Refinement:** Subtle top-down gradients are allowed to add weight and depth (e.g., from #0a0a0a to #050505).
-- **Depth:** Achieved via **2px Ghost Borders** and massive offsets.
-- **RESTRICTION:** NO rounded corners (0px only). NO technical IDs or metadata markers. Pure content only.
+- **Transitions**: Preference for step-based or high-speed cubic-bezier transitions (`expo.inOut`). 
+- **Linear Logic**: Avoid elastic or bouncy easing. Movement should feel deliberate and controlled.
 
----
+## 6. UI Components
 
-## 7. Do’s and Don’ts
+### Interactive Elements
+- **Border Radius**: 0px globally.
+- **Shadows**: Hard-edged 4px block shadows for depth.
 
-### Do:
-- **Use Massive Voids:** Let the black void dominate.
-- **Align to a Grid:** Every element must be locked to an invisible structural grid.
-- **Sharpness:** 0px corners only.
+### Structural Blocks (Cards)
+- **Background**: Solid `#050505` with optional subtle top-down gradients.
+- **Borders**: 1px ghost borders (5% - 8% opacity) for subtle separation on dark surfaces.
+- **Constraints**: No rounded corners. No simulated metadata IDs. Pure content blocks only.
 
-### Don’t:
-- **NO FAKE TECH:** Never use coordinates, `REF //` labels, version numbers, or simulated metadata. These are "decorative noise" and are strictly prohibited.
-- **No Blurs:** Never use backdrop-blur or soft effects.
-- **No 1px Lines:** If it’s thin, it’s a "Ghost Border" at 5% opacity. 
-- **No Transitions:** UI states should "cut" or "snap."
-tional grid.
+## 7. Guidelines Summary
+
+### Implementation Requirements:
+- Use intentional negative space to separate content.
+- Lock every element to the structural grid.
+- Maintain strict typographic hierarchy (avoid intermediate sizes).
+
+### Prohibited Elements:
+- No simulated "tech" decorative labels or coordinates.
+- No backdrop blurs or soft-focus effects.
+- No rounded UI components.
