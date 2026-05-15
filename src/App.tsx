@@ -34,17 +34,36 @@ function App() {
     };
   }, []);
 
-  // Action 1.3: Scroll-Synchronized Navigation Tracking
+  // Action 1.3: Scroll-Synchronized Navigation & Snapping
   useGSAP(() => {
     const sections = ['hero', 'services', 'social-proof', 'partners', 'contact-form'];
     
+    const mm = gsap.matchMedia();
+    
+    mm.add("(min-width: 1024px)", () => {
+      // Force refresh after a delay to allow all child pins to stabilize
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 200);
+    });
+
+    // Create main tracking triggers for sections
     sections.forEach(id => {
+      if (!ScrollTrigger.getById(id)) {
+        ScrollTrigger.create({
+          id: id,
+          trigger: `#${id}`,
+          start: "top top",
+          snap: 1, // Automatic snap for simple sections
+        });
+      }
+
+      // Tracking for Sidebar active state
       ScrollTrigger.create({
         trigger: `#${id}`,
-        start: "top 40%", // Trigger when section is near top/middle
+        start: "top 40%", 
         end: "bottom 40%",
         onToggle: (self) => {
-          // Only update if we're NOT in a programmatic scroll
           if (self.isActive && !isNavigating.current) {
             setActiveSection(id);
           }

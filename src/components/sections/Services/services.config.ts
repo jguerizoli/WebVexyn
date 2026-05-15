@@ -1,7 +1,7 @@
 export const SERVICES_CONFIG = {
   orchestration: {
-    scrollEndMultiplier: 150, // % per card
-    scrub: 0.5,
+    SCROLL_PER_CARD: 800, // Distance (px) user must scroll to change one card
+    scrub: 1, // Increased for smoother architectural feel
     pin: true,
     start: 'top top',
   },
