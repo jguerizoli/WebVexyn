@@ -1,0 +1,153 @@
+.errorPage {
+  min-height: calc(100vh - 4.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--respiro-h);
+  position: relative;
+  overflow: hidden;
+  background: var(--vx-black);
+}
+
+.container {
+  position: relative;
+  z-index: 10;
+  max-width: 800px;
+  width: 100%;
+}
+
+.badge {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--vx-orange);
+  letter-spacing: 0.2em;
+  margin-bottom: 1.5rem;
+  opacity: 0.8;
+}
+
+.title {
+  font-family: var(--font-main);
+  font-weight: 900;
+  font-size: clamp(3rem, 10vw, 6rem);
+  line-height: 1;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  letter-spacing: -0.04em;
+}
+
+.accent {
+  color: var(--vx-orange);
+}
+
+.message {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  color: var(--vx-white);
+  opacity: 0.7;
+  max-width: 500px;
+  line-height: 1.6;
+  margin-bottom: 3rem;
+}
+
+/* Search Box - Brutalismo Chic */
+.searchBox {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem;
+  margin-bottom: 4rem;
+  max-width: 600px;
+  transition: var(--transition-chic);
+}
+
+.searchBox:focus-within {
+  border-color: var(--vx-orange);
+  background: rgba(255, 255, 256, 0.05);
+}
+
+.searchIcon {
+  color: var(--vx-light-grey);
+  margin: 0 1rem;
+}
+
+.searchInput {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--vx-white);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: 0.8rem 0;
+  outline: none;
+}
+
+.searchBtn {
+  background: var(--vx-orange);
+  color: var(--vx-white);
+  padding: 0.8rem 1.5rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: var(--transition-step);
+}
+
+.searchBtn:hover {
+  filter: brightness(1.2);
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+/* Background Decoration */
+.backgroundText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-main);
+  font-size: 40vw;
+  font-weight: 900;
+  color: var(--vx-white);
+  opacity: 0.02;
+  pointer-events: none;
+  z-index: 1;
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .errorPage {
+    padding-top: 6rem;
+  }
+  
+  .title {
+    font-size: 4rem;
+  }
+  
+  .actions {
+    flex-direction: column;
+  }
+  
+  .actionBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}

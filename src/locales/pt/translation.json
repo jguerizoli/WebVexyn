@@ -95,13 +95,32 @@
     },
     "status": {
       "sending": "[ENVIANDO...]",
-      "sent": "[MENSAGEM_ENVIADA_COM_SUCESSO]",
+      "sent": "MENSAGEM ENVIADA",
       "send": "ENVIAR MENSAGEM",
       "errors": {
         "name": "Nome é obrigatório",
         "email": "Um e-mail válido é obrigatório",
         "message": "Mensagem é obrigatória"
       }
+    }
+  },
+  "footer": {
+    "nav": "NAVEGAÇÃO",
+    "social": "SOCIAL",
+    "legal": "LEGAL",
+    "copyright": "© 2026 VEXYN. TODOS OS DIREITOS RESERVADOS.",
+    "privacy": "Privacidade",
+    "terms": "Termos",
+    "location": "BRASILIA / BR",
+    "email": "HELLO@VEXYN.COM"
+  },
+  "error404": {
+    "message": "Parece que você acessou uma zona de sombra digital. Não se preocupe, estamos aqui para te trazer de volta.",
+    "search_placeholder": "O que você está procurando?",
+    "buttons": {
+      "home": "Voltar para Início",
+      "services": "Ver Serviços",
+      "support": "Suporte"
     }
   }
 }

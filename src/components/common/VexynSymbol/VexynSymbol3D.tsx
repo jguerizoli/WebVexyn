@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 
@@ -124,27 +124,16 @@ const VexynMark3D = ({ isInView }: { isInView: boolean }) => {
     ];
   }, [paths]);
 
-  const { mouse } = useThree();
-  const targetRotation = useRef({ x: 0, y: 0 });
 
   useFrame((state) => {
     if (!isInView) return;
-
-    // Smooth lerp for mouse rotation
-    targetRotation.current.y = THREE.MathUtils.lerp(targetRotation.current.y, mouse.x * 0.3, 0.05);
-    targetRotation.current.x = THREE.MathUtils.lerp(targetRotation.current.x, -mouse.y * 0.2, 0.05);
 
     circuits.forEach((c) => {
       c.material.uniforms.uTime.value = state.clock.elapsedTime;
     });
 
     if (meshRef.current) {
-      // Base idle animation + mouse influence
-      const idleRotation = Math.sin(state.clock.elapsedTime * 0.5) * 0.05;
-      meshRef.current.rotation.y = idleRotation + targetRotation.current.y;
-      meshRef.current.rotation.x = targetRotation.current.x;
-      
-      // Subtle floaty motion
+      // Subtle floaty motion (Keeping this as it wasn't requested to be removed)
       meshRef.current.position.y = 2.75 + Math.sin(state.clock.elapsedTime * 0.8) * 0.1;
     }
   });
@@ -187,16 +176,9 @@ const VexynSymbol3D: React.FC<{ className?: string; size?: string }> = ({ classN
         frameloop={isInView ? 'always' : 'never'} // HARD CUT ON RENDER
       >
         <VexynMark3D isInView={isInView} />
-        {isInView && (
-          <EffectComposer disableNormalPass>
-            <Bloom intensity={1.2} luminanceThreshold={1.1} luminanceSmoothing={0.5} radius={0.4} />
-            <ChromaticAberration 
-              offset={new THREE.Vector2(0.002, 0.002)} 
-              radialModulation={false}
-              modulationOffset={0}
-            />
-          </EffectComposer>
-        )}
+        <EffectComposer enableNormalPass={false}>
+          <Bloom intensity={1.2} luminanceThreshold={1.1} luminanceSmoothing={0.5} radius={0.4} />
+        </EffectComposer>
       </Canvas>
     </div>
   );

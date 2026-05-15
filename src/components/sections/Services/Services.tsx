@@ -4,8 +4,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { useTranslation } from 'react-i18next';
 import ServiceCard from './ServiceCard/ServiceCard';
-import { SERVICES_CONFIG } from './services.config';
-
 import styles from './Services.module.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -66,26 +64,77 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
   ];
   
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
-  const autoTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const goToCard = (index: number) => {
-    if (isDesktop && scrollTriggerRef.current) {
-      const st = scrollTriggerRef.current;
-      const start = st.start;
-      const end = st.end;
-      const totalScroll = end - start;
-      const targetScroll = start + (index / (SERVICES_DATA.length - 1)) * totalScroll;
-      
-      gsap.to(window, {
-        scrollTo: targetScroll,
-        duration: 1.2,
-        ease: "power3.inOut"
-      });
-    } else if (autoTimelineRef.current) {
-      const tl = autoTimelineRef.current;
-      tl.tweenTo(`card-${index}`, { duration: 1, ease: "power3.inOut" });
-    }
+    if (isAnimating || index === activeIndex) return;
+    
+    const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
+    const current = cards[activeIndex];
+    const next = cards[index];
+    
+    if (!current || !next || !cardsContainerRef.current) return;
+
+    setIsAnimating(true);
+    setActiveIndex(index);
+
+    // Update counter text directly for performance
+    const counterEl = document.getElementById('services-current');
+    if (counterEl) counterEl.innerText = (index + 1).toString().padStart(2, '0');
+
+    // Adaptive Height Logic: Measure the content of the next card
+    // We set next to visibility: hidden and height: auto temporarily to measure
+    gsap.set(next, { visibility: "hidden", display: "block", position: "relative" });
+    const nextHeight = next.offsetHeight;
+    gsap.set(next, { visibility: "visible", display: "block", position: "absolute" });
+
+    const tl = gsap.timeline({
+      onComplete: () => setIsAnimating(false)
+    });
+
+    // Animate the container height to fit the next card
+    tl.to(cardsContainerRef.current, {
+      height: nextHeight,
+      duration: 0.6,
+      ease: "power2.inOut"
+    }, 0);
+
+    // 1. Transition Out Previous
+    tl.to(current, {
+      yPercent: -5,
+      opacity: 0,
+      duration: 0.6,
+      ease: "power2.inOut",
+      pointerEvents: "none",
+      zIndex: 10
+    }, 0);
+
+    // 2. Transition In Next
+    tl.fromTo(next,
+      { yPercent: 5, opacity: 0, zIndex: 50 },
+      { 
+        yPercent: 0, 
+        opacity: 1, 
+        duration: 0.6, 
+        ease: "power2.inOut",
+        pointerEvents: "auto"
+      },
+      "-=0.4"
+    );
+
+    // 3. Force Content Reveal (fixes the "incomplete" bug)
+    const elements = {
+      title: next.querySelector('h3'),
+      subtitle: next.querySelector('p'),
+      listItems: next.querySelectorAll('li'),
+      cta: next.querySelector('button')
+    };
+
+    if (elements.title) tl.fromTo(elements.title, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 }, "-=0.6");
+    if (elements.subtitle) tl.fromTo(elements.subtitle, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 }, "-=0.5");
+    if (elements.listItems.length) tl.fromTo(elements.listItems, { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.05 }, "-=0.4");
+    if (elements.cta) tl.fromTo(elements.cta, { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 }, "-=0.3");
   };
 
   const handlePrev = () => {
@@ -100,109 +149,24 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
 
   useGSAP(() => {
     const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
-    const mm = gsap.matchMedia();
+    
+    // Initial State: Only first card visible, others staged
+    gsap.set(cards, { opacity: 0, yPercent: 10, pointerEvents: "none", zIndex: 10 });
+    gsap.set(cards[0], { opacity: 1, yPercent: 0, pointerEvents: "auto", zIndex: 50 });
 
-    // --- DESKTOP: SCRUB ORCHESTRATION ---
-    mm.add("(min-width: 1024px)", () => {
-      // Setup Initial State
-      gsap.set(cards, { yPercent: 105, opacity: 0, zIndex: 10 });
-      gsap.set(cards[0], { yPercent: 0, opacity: 1, zIndex: 50 });
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: container.current,
-          id: "services", // Explicit ID for global snap lookup
-          start: "top top",
-          end: `+=${SERVICES_DATA.length * SERVICES_CONFIG.orchestration.SCROLL_PER_CARD}`,
-          pin: true,
-          scrub: SERVICES_CONFIG.orchestration.scrub,
-          anticipatePin: 1, // Eliminates the "jump" or delay before pinning
-          snap: 1 / (SERVICES_DATA.length - 1), // Snap to each card
-          onUpdate: (self) => {
-            const progress = self.progress;
-            const newIndex = Math.round(progress * (SERVICES_DATA.length - 1));
-            if (newIndex !== activeIndex) {
-              setActiveIndex(newIndex);
-              // Update counter text directly for performance
-              const counterEl = document.getElementById('services-current');
-              if (counterEl) counterEl.innerText = (newIndex + 1).toString().padStart(2, '0');
-            }
-          },
-        }
-      });
-      
-      scrollTriggerRef.current = tl.scrollTrigger!;
-
-      cards.forEach((card, i) => {
-        if (i === 0) return; // First card is already visible
-
-        const prev = cards[i - 1];
-        const current = card;
-
-        // Transition Out Previous & In Current
-        tl.to(prev, { 
-          yPercent: SERVICES_CONFIG.transitions.exitYPercent, 
-          opacity: 0, 
-          duration: 1 
-        }, i - 0.5);
-        
-        tl.to(current, { 
-          yPercent: 0, 
-          opacity: 1, 
-          zIndex: 50 + i,
-          duration: 1 
-        }, i - 0.5);
-
-        // Content Reveal for current card
-        const title = current.querySelector('h3');
-        const subtitle = current.querySelector('p');
-        const listItems = current.querySelectorAll('li');
-        const cta = current.querySelector('button');
-
-        if (title) tl.from(title, { y: 20, opacity: 0, duration: 0.4 }, i - 0.2);
-        if (subtitle) tl.from(subtitle, { y: 15, opacity: 0, duration: 0.4 }, i - 0.15);
-        if (listItems.length) tl.from(listItems, { y: 10, opacity: 0, duration: 0.3, stagger: 0.05 }, i - 0.1);
-        if (cta) tl.from(cta, { y: 10, opacity: 0, duration: 0.3 }, i);
-      });
-
-      return () => {
-        tl.kill();
-        scrollTriggerRef.current = null;
-      };
+    // Master Anchor for the Global Scroll Manager
+    ScrollTrigger.create({
+      trigger: container.current,
+      id: "services",
+      start: "top top",
+      pin: false // Single stop section
     });
 
-    // --- MOBILE: AUTO CAROUSEL FALLBACK ---
-    mm.add("(max-width: 1023px)", () => {
-      gsap.set(cards, { yPercent: 105, opacity: 0, zIndex: 10 });
-      gsap.set(cards[0], { yPercent: 0, opacity: 1, zIndex: 50 });
+    // Set initial container height to match first card
+    if (cardsContainerRef.current && cards[0]) {
+      gsap.set(cardsContainerRef.current, { height: cards[0].offsetHeight });
+    }
 
-      const tl = gsap.timeline({ 
-        repeat: -1,
-        defaults: { ease: "expo.inOut" } 
-      });
-      autoTimelineRef.current = tl;
-
-      cards.forEach((card, i) => {
-        const nextIndex = (i + 1) % cards.length;
-        const current = card;
-        const next = cards[nextIndex];
-        const label = `card-${i}`;
-
-        tl.add(label);
-        tl.call(() => setActiveIndex(i), [], label);
-        
-        // Progress bar simulation for mobile
-        tl.fromTo('#services-progress-auto', { scaleX: 0 }, { scaleX: 1, duration: 3, ease: "none" }, label);
-
-        tl.to(current, { yPercent: -105, opacity: 0, duration: 1 });
-        tl.to(next, { yPercent: 0, opacity: 1, zIndex: 60, duration: 1 }, "<");
-        tl.set(current, { zIndex: 10, yPercent: 105, opacity: 0 });
-      });
-
-      return () => tl.kill();
-    });
-
-    return () => mm.revert();
   }, { scope: container });
 
   return (
@@ -229,9 +193,6 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
                   transition: 'transform 0.5s cubic-bezier(0.19, 1, 0.22, 1)',
                   display: isDesktop ? 'block' : 'none'
                 }} />
-                <div className={styles.progressFill} id="services-progress-auto" style={{ 
-                  display: !isDesktop ? 'block' : 'none'
-                }} />
               </div>
               
               <div className={styles.navControls}>
@@ -247,24 +208,10 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
                 </button>
               </div>
             </div>
-
-            <div className={styles.markers}>
-              {SERVICES_DATA.map((_, i) => (
-                <button 
-                  key={i} 
-                  className={`${styles.marker}${activeIndex === i ? ` ${styles.markerActive}` : ''}`} 
-                  onClick={() => goToCard(i)} 
-                />
-              ))}
-            </div>
           </div>
         </header>
-
-        <div 
-          className={styles.cardsContainer}
-          onMouseEnter={() => autoTimelineRef.current?.pause()}
-          onMouseLeave={() => autoTimelineRef.current?.play()}
-        >
+ 
+        <div ref={cardsContainerRef} className={styles.cardsContainer}>
           {SERVICES_DATA.map((service, i) => (
             <div key={service.id} ref={(el) => { cardsRef.current[i] = el; }} className={styles.stackCard}>
               <ServiceCard service={service} index={i + 1} onCtaClick={() => scrollTo('contact-form')} />

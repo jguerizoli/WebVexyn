@@ -1,0 +1,235 @@
+.footer {
+  background-color: var(--vx-black, #050505);
+  padding: 8vw var(--respiro-h) 4vw;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.footer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.topContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 4vw;
+  align-items: start;
+}
+
+.brandColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.visuals {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  color: var(--vx-white, #ffffff);
+}
+
+.brandMark {
+  width: 50px;
+  height: auto;
+  opacity: 0.8;
+}
+
+.wordmark {
+  width: 160px;
+  height: auto;
+  letter-spacing: 0.2em;
+}
+
+.metaData {
+  display: flex;
+  gap: 3rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding-left: 1.5rem;
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.metaLabel {
+  font-family: var(--font-mono, 'Geist Mono', monospace);
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.1em;
+}
+
+.metaValue {
+  font-family: var(--font-mono, 'Geist Mono', monospace);
+  font-size: 0.8rem;
+  color: var(--vx-white, #ffffff);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.weatherIcon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--vx-orange, #E5511A);
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.columnTitle {
+  font-family: var(--font-mono, 'Geist Mono', monospace);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--vx-orange, #E5511A);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.linkList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.linkItem {
+  margin: 0;
+}
+
+.link {
+  font-family: var(--font-body, 'Geist', sans-serif);
+  font-weight: 300;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  transition: var(--transition-chic, all 0.4s ease);
+  display: inline-block;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-transform: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.link::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.link:hover::before {
+  left: 100%;
+}
+
+.link:hover {
+  color: var(--vx-white, #ffffff);
+  transform: translateX(8px);
+}
+
+.bottomBar {
+  margin-top: 4vw;
+  padding-top: 2vw;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.copyright {
+  font-family: var(--font-mono, 'Geist Mono', monospace);
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.legalLinks {
+  display: flex;
+  gap: 3rem;
+}
+
+.legalLink {
+  font-family: var(--font-mono, 'Geist Mono', monospace);
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.2);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  text-transform: uppercase;
+}
+
+.legalLink:hover {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 1024px) {
+  .logo {
+    font-size: 20vw;
+  }
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 6vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 12vw 6vw 25vw; /* Bottom padding for mobile nav overlap */
+  }
+
+  .brandColumn {
+    grid-column: 1 / -1;
+    margin-bottom: 4vw;
+  }
+
+  .bottomBar {
+    flex-direction: column;
+    gap: 2rem;
+    align-items: flex-start;
+    margin-top: 12vw;
+  }
+
+  .legalLinks {
+    gap: 1.5rem;
+  }
+}

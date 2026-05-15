@@ -1,15 +1,17 @@
 .card {
   position: absolute;
-  width: 100%;
-  height: 380px;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  height: auto;
+  min-height: 420px;
   background: #050505;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 2.5rem 4rem;
+  padding: 2.5rem 4rem 3rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   overflow: hidden; /* Necessary for scanner sweep */
-  transition: var(--transition-chic);
+  transition: none; /* Shutter Cut: Instant feedback */
 }
 
 .card:hover {
@@ -17,7 +19,7 @@
   background: #080808;
 }
 
-/* The Scanner Sweep Effect */
+/* The Scanner Sweep Effect (Standardized) */
 .card::before {
   content: '';
   position: absolute;
@@ -28,7 +30,7 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(229, 81, 26, 0.05) 50%,
+    rgba(255, 255, 255, 0.2) 50%,
     transparent 100%
   );
   z-index: 1;
@@ -36,7 +38,7 @@
 }
 
 .card:hover::before {
-  animation: scanner-sweep 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  animation: scanner-sweep 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes scanner-sweep {
@@ -78,15 +80,25 @@
   /* Surgical gradient */
   background: linear-gradient(to bottom, #fff 0%, #888 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   display: block;
-  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: none; /* Shutter Cut */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
 }
 
 .card:hover .title {
   transform: translateX(10px);
   background: linear-gradient(to right, #fff 0%, var(--vx-orange) 200%);
   -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
