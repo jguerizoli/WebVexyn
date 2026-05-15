@@ -94,20 +94,18 @@ function App() {
 
       if (target !== undefined) {
         isAnimating = true;
-        const cleanup = () => { 
-          isAnimating = false; 
-          isNavigating.current = false;
-          ScrollTrigger.update();
-        };
+        isNavigating.current = true;
 
         gsap.to(window, {
           scrollTo: target,
           duration: 1.1,
           ease: "power3.inOut",
-          onStart: () => { isNavigating.current = true; },
-          onComplete: cleanup,
-          onInterrupt: cleanup,
-          onOverwrite: cleanup
+          overwrite: true,
+          onComplete: () => { 
+            isAnimating = false; 
+            isNavigating.current = false;
+            ScrollTrigger.update();
+          }
         });
       } else {
         console.warn("[ScrollManager] No valid target found in direction:", direction);
@@ -116,11 +114,13 @@ function App() {
 
     const obs = Observer.create({
       type: "wheel,touch,pointer",
-      wheelSpeed: -1,
+      // Removed wheelSpeed: -1 to keep natural direction
       onDown: (self) => {
+        // onDown in Observer = user scrolls DOWN / swipes UP
         if (Math.abs(self.deltaY) > 20) gotoPoint(1);
       },
       onUp: (self) => {
+        // onUp in Observer = user scrolls UP / swipes DOWN
         if (Math.abs(self.deltaY) > 20) gotoPoint(-1);
       },
       tolerance: 25,
