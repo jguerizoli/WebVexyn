@@ -5,6 +5,7 @@ import { useGSAP } from '@gsap/react';
 import ResultCard from './ResultCard/ResultCard';
 import styles from './Results.module.css';
 import { REVIEWS } from './results.data';
+import { RESULTS_CONFIG } from './results.config';
 import Button from '../../common/Button/Button';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -23,38 +24,35 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
     const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
     if (!cards.length) return;
     
+    const { orchestration, animations } = RESULTS_CONFIG;
+
     // Initial centering set to avoid jumps
     gsap.set(cards, { xPercent: -50, yPercent: -50 });
-
-    // Orchestration Configuration
-    const config = {
-      fanRotation: 4,
-      fanX: 140,
-      fanY: 5,
-      scrollLength: "+=150%"
-    };
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
         start: "top top",
-        end: config.scrollLength,
+        end: orchestration.scrollLength,
         pin: true,
-        scrub: 1,
+        pinSpacing: true,
+        scrub: orchestration.scrub,
         invalidateOnRefresh: true,
+        anticipatePin: 1,
+        fastScrollEnd: true,
       }
     });
 
     // Phase 1: Context Reveal (Title)
     tl.fromTo(`.${styles.titleStaged1}`, 
-      { y: 50, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, ease: "expo.out" }
+      { y: animations.title.yOffset, opacity: 1 },
+      { y: 0, opacity: 1, duration: animations.title.duration, ease: animations.title.ease }
     );
 
     tl.fromTo(`.${styles.titleStaged2}`, 
-      { y: 50, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, ease: "expo.out" },
-      "-=0.8"
+      { y: animations.title.yOffset, opacity: 1 },
+      { y: 0, opacity: 1, duration: animations.title.duration, ease: animations.title.ease },
+      animations.title.staggerOverlap
     );
 
     // Phase 2: Object Spread (ResultCards)
@@ -62,9 +60,9 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
       const isEven = i % 2 === 0;
       const offset = (i - (cards.length - 1) / 2);
       
-      const fanRotation = offset * config.fanRotation;
-      const fanX = offset * config.fanX;
-      const fanY = Math.abs(offset) * config.fanY;
+      const fanRotation = offset * orchestration.fanRotation;
+      const fanX = offset * orchestration.fanX;
+      const fanY = Math.abs(offset) * orchestration.fanY;
 
       // Animate the card root according to the contract
       tl.fromTo(card, 
@@ -72,10 +70,10 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
           opacity: 0,
           xPercent: -50,
           yPercent: -50,
-          y: fanY + 50,
+          y: fanY + animations.cards.yOffset,
           x: fanX * 0.5,
-          rotation: isEven ? -5 : 5,
-          scale: 0.95
+          rotation: isEven ? -animations.cards.initialRotation : animations.cards.initialRotation,
+          scale: animations.cards.scale
         },
         { 
           opacity: 1,
@@ -85,19 +83,19 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
           x: fanX,
           rotation: fanRotation,
           scale: 1,
-          duration: 1.5,
-          ease: "expo.out"
+          duration: animations.cards.duration,
+          ease: animations.cards.ease
         },
-        "-=1.2"
+        animations.cards.overlap
       );
     });
 
     // Phase 3: Conversion Reveal (CTA)
     if (ctaRef.current) {
       tl.fromTo(ctaRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, ease: "expo.out" },
-        "-=1"
+        { y: animations.cta.yOffset, opacity: 0 },
+        { y: 0, opacity: 1, duration: animations.cta.duration, ease: animations.cta.ease },
+        animations.cta.overlap
       );
     }
 
@@ -114,7 +112,7 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
         <div className={styles.portalRing} />
         
         {/* Domain Logic: Results Header */}
-        <header className="w-full text-center z-10 px-[--respiro-h] mb-12">
+        <header className={styles.header}>
           <h2 id="results-title" className={styles.title}>
             <span className={styles.titleStaged1}>Want some</span>
             <span className={styles.titleStaged2}>proof?</span>
@@ -122,19 +120,19 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
         </header>
 
         {/* Domain Logic: Results Stack */}
-        <div className="relative w-full flex flex-col items-center z-10 px-[--respiro-h] gap-12">
-          <div className="relative w-full max-w-7xl flex justify-center items-center h-[300px]">
+        <div className={styles.resultsContent}>
+          <div className={styles.stackContainer}>
             {REVIEWS.map((review, i) => (
               <ResultCard 
                 key={i} 
                 review={review}
-                ref={el => cardsRef.current[i] = el}
+                ref={el => { cardsRef.current[i] = el; }}
               />
             ))}
           </div>
 
           {/* Domain Logic: Conversion Hook */}
-          <div ref={ctaRef} className="opacity-0">
+          <div ref={ctaRef} className={styles.ctaReveal}>
             <Button 
               onClick={() => scrollTo?.('contact-form')}
               variant="primary"

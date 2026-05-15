@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import ServiceCard from './ServiceCard/ServiceCard';
+import { SERVICES_CONFIG } from './services.config';
 
 import styles from './Services.module.css';
 
@@ -36,25 +37,26 @@ interface ServicesProps {
   scrollTo: (id: string) => void;
 }
 
-const Services: React.FC<ServicesProps> = () => {
+const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
   const container = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useGSAP(() => {
     const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
+    const { orchestration, transitions, content } = SERVICES_CONFIG;
     
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: container.current,
-        start: 'top top',
-        end: `+=${cards.length * 150}%`,
-        pin: true,
-        scrub: 0.5,
+        start: orchestration.start,
+        end: `+=${cards.length * orchestration.scrollEndMultiplier}%`,
+        pin: orchestration.pin,
+        scrub: orchestration.scrub,
       }
     });
 
     // Initial State
-    gsap.set(cards, { yPercent: -105, opacity: 0, zIndex: 10 });
+    gsap.set(cards, { yPercent: transitions.entryYPercent, opacity: 0, zIndex: 10 });
     gsap.set(cards[0], { yPercent: 0, opacity: 1, zIndex: 20 });
 
     cards.forEach((card, i) => {
@@ -66,26 +68,26 @@ const Services: React.FC<ServicesProps> = () => {
       // The Transition Phase
       const startTime = i;
 
-      // Current Card EXITS to Bottom
+      // Current Card EXITS to Top
       tl.to(currentCard, {
-        yPercent: 105,
+        yPercent: transitions.exitYPercent,
         opacity: 0,
-        duration: 1,
-        ease: 'expo.inOut'
+        duration: transitions.duration,
+        ease: transitions.ease
       }, startTime);
 
-      // Next Card ENTERS from Top
+      // Next Card ENTERS from Bottom
       tl.fromTo(nextCard, 
         { 
-          yPercent: -105,
+          yPercent: transitions.entryYPercent,
           opacity: 1,
           zIndex: 30 + i
         },
         { 
           yPercent: 0,
           opacity: 1,
-          duration: 1,
-          ease: 'expo.inOut'
+          duration: transitions.duration,
+          ease: transitions.ease
         }, 
         startTime
       );
@@ -97,25 +99,25 @@ const Services: React.FC<ServicesProps> = () => {
 
       if (title) {
         tl.fromTo(title, 
-          { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out' },
-          startTime + 0.4
+          { y: content.title.yOffset, opacity: 0 },
+          { y: 0, opacity: 1, duration: content.title.duration, ease: content.title.ease },
+          startTime + content.title.delay
         );
       }
 
       if (listItems.length > 0) {
         tl.fromTo(listItems, 
-          { y: 20, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.3, stagger: 0.05, ease: 'power2.out' },
-          startTime + 0.5
+          { y: content.listItems.yOffset, opacity: 0 },
+          { y: 0, opacity: 1, duration: content.listItems.duration, stagger: content.listItems.stagger, ease: content.listItems.ease },
+          startTime + content.listItems.delay
         );
       }
 
       if (cta) {
         tl.fromTo(cta, 
-          { y: 15, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.3, ease: 'back.out(1.7)' },
-          startTime + 0.7
+          { y: content.cta.yOffset, opacity: 0 },
+          { y: 0, opacity: 1, duration: content.cta.duration, ease: content.cta.ease },
+          startTime + content.cta.delay
         );
       }
     });
@@ -139,13 +141,13 @@ const Services: React.FC<ServicesProps> = () => {
           {SERVICES_DATA.map((service, i) => (
             <div 
               key={service.id} 
-              ref={(el) => (cardsRef.current[i] = el)}
+              ref={(el) => { cardsRef.current[i] = el; }}
               className={styles.stackCard}
             >
               <ServiceCard 
                 service={service} 
                 index={i + 1}
-                onCtaClick={() => console.log(`Clicked ${service.title}`)}
+                onCtaClick={() => scrollTo('contact-form')}
               />
             </div>
           ))}

@@ -20,7 +20,7 @@ interface ServiceCardProps {
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ 
   service, 
-  index,
+  index: _index,
   onCtaClick, 
   className, 
   style 

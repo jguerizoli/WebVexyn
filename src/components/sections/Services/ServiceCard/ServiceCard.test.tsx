@@ -12,14 +12,14 @@ describe('ServiceCard', () => {
   };
 
   it('renders the title and subtitle correctly', () => {
-    render(<ServiceCard service={mockService} />);
+    render(<ServiceCard service={mockService} index={1} />);
     
     expect(screen.getByText('AUTOMAÇÕES')).toBeDefined();
     expect(screen.getByText('SISTEMAS INTELIGENTES')).toBeDefined();
   });
 
   it('renders all deliverables', () => {
-    render(<ServiceCard service={mockService} />);
+    render(<ServiceCard service={mockService} index={1} />);
     
     expect(screen.getByText('PYTHON & AI')).toBeDefined();
     expect(screen.getByText('INTEGRAÇÕES API')).toBeDefined();
@@ -27,7 +27,7 @@ describe('ServiceCard', () => {
 
   it('calls onCtaClick when button is clicked', () => {
     const onCtaClick = vi.fn();
-    render(<ServiceCard service={mockService} onCtaClick={onCtaClick} />);
+    render(<ServiceCard service={mockService} index={1} onCtaClick={onCtaClick} />);
     
     const button = screen.getByRole('button');
     fireEvent.click(button);

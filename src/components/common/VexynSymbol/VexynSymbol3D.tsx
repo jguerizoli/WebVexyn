@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { EffectComposer, Bloom } from '@react-three/postprocessing';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 
@@ -35,7 +35,8 @@ const EnergyCircuitShader = {
     
     void main() {
       // Calculate head position with global speed and circuit offset
-      float headPos = mod(uTime * uSpeed + uCircuitOffset, uTotalLength);
+      float time = uTime * uSpeed;
+      float headPos = mod(time + uCircuitOffset, uTotalLength);
       
       // Advanced wraparound: check three possible positions to cover the 0/Length seam
       float d1 = abs(vDist - headPos);
@@ -43,15 +44,20 @@ const EnergyCircuitShader = {
       float d3 = abs(vDist - (headPos - uTotalLength));
       float distToHead = min(d1, min(d2, d3));
 
+      // Noise-based energy variation
+      float energyVariation = sin(vDist * 0.1 + uTime * 5.0) * 0.5 + 0.5;
+      float pulseWave = sin(uTime * 15.0 - vDist * 0.02) * 0.1 + 0.9;
+      
       // Sharper falloff for the core and a smooth technical glow
-      float core = smoothstep(uCoreSize, uCoreSize * 0.5, distToHead);
-      float glow = smoothstep(uCoreSize * 4.0, 0.0, distToHead);
+      float core = smoothstep(uCoreSize, uCoreSize * 0.4, distToHead);
+      float glow = smoothstep(uCoreSize * 6.0, 0.0, distToHead);
       
       // Technical energy shimmer
-      float shimmer = sin(vDist * 3.0 + uTime * 25.0) * 0.05 + 0.95;
+      float shimmer = sin(vDist * 5.0 + uTime * 30.0) * 0.1 + 0.9;
       
-      vec3 finalColor = uColor * (core * 40.0 + glow * 6.0) * shimmer;
-      float alpha = core * 1.0 + glow * 0.4;
+      // Final color composition with organic pulsing
+      vec3 finalColor = uColor * (core * 25.0 * pulseWave + glow * 3.0 * energyVariation) * shimmer;
+      float alpha = core * 1.0 + glow * 0.3 * energyVariation;
       
       if (alpha < 0.01) discard;
       
@@ -118,14 +124,28 @@ const VexynMark3D = ({ isInView }: { isInView: boolean }) => {
     ];
   }, [paths]);
 
+  const { mouse } = useThree();
+  const targetRotation = useRef({ x: 0, y: 0 });
+
   useFrame((state) => {
-    if (!isInView) return; // KILL THE LOOP IF OFF-SCREEN
+    if (!isInView) return;
+
+    // Smooth lerp for mouse rotation
+    targetRotation.current.y = THREE.MathUtils.lerp(targetRotation.current.y, mouse.x * 0.3, 0.05);
+    targetRotation.current.x = THREE.MathUtils.lerp(targetRotation.current.x, -mouse.y * 0.2, 0.05);
 
     circuits.forEach((c) => {
       c.material.uniforms.uTime.value = state.clock.elapsedTime;
     });
+
     if (meshRef.current) {
-      meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.2) * 0.04;
+      // Base idle animation + mouse influence
+      const idleRotation = Math.sin(state.clock.elapsedTime * 0.5) * 0.05;
+      meshRef.current.rotation.y = idleRotation + targetRotation.current.y;
+      meshRef.current.rotation.x = targetRotation.current.x;
+      
+      // Subtle floaty motion
+      meshRef.current.position.y = 2.75 + Math.sin(state.clock.elapsedTime * 0.8) * 0.1;
     }
   });
 
@@ -168,8 +188,13 @@ const VexynSymbol3D: React.FC<{ className?: string; size?: string }> = ({ classN
       >
         <VexynMark3D isInView={isInView} />
         {isInView && (
-          <EffectComposer>
-            <Bloom intensity={1.5} luminanceThreshold={1.0} luminanceSmoothing={0.5} radius={0.4} />
+          <EffectComposer disableNormalPass>
+            <Bloom intensity={1.2} luminanceThreshold={1.1} luminanceSmoothing={0.5} radius={0.4} />
+            <ChromaticAberration 
+              offset={new THREE.Vector2(0.002, 0.002)} 
+              radialModulation={false}
+              modulationOffset={0}
+            />
           </EffectComposer>
         )}
       </Canvas>

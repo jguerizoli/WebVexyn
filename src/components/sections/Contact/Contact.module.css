@@ -1,17 +1,17 @@
 .section {
   width: 100%;
   min-height: 100vh;
-  padding: 6rem 10vw; /* Reduced from 12rem (v-xl) to ensure display fit */
+  padding: var(--respiro-v-xl) var(--respiro-h);
   background-color: var(--vx-black);
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .grid {
   display: grid;
   grid-template-columns: 0.9fr 1.1fr;
-  gap: 6rem; /* Tightened from 8rem */
+  gap: var(--respiro-h);
   align-items: flex-start;
 }
 
@@ -23,8 +23,8 @@
 .title {
   font-family: var(--font-main);
   font-weight: 900;
-  font-size: clamp(3.5rem, 8vw, 6rem);
-  line-height: 0.9;
+  font-size: clamp(3.5rem, 8vw, var(--fs-mega));
+  line-height: var(--lh-mega);
   text-transform: uppercase;
   color: var(--vx-white);
   margin-bottom: 1.5rem;
@@ -35,12 +35,12 @@
 .description {
   font-family: var(--font-body);
   font-weight: 300;
-  font-size: 1.25rem;
+  font-size: var(--fs-body);
   color: var(--vx-white);
   opacity: 0.85;
   max-width: 420px;
   margin-bottom: 3rem;
-  line-height: 1.4;
+  line-height: var(--lh-body);
 }
 
 .details {
@@ -56,7 +56,7 @@
 
 .detailLabel {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: var(--fs-caption);
   color: var(--vx-orange);
   margin-bottom: 0.5rem;
   text-transform: uppercase;
@@ -65,7 +65,7 @@
 .detailValue {
   font-family: var(--font-main);
   font-weight: 900;
-  font-size: 1.2rem;
+  font-size: var(--fs-body);
   color: var(--vx-white);
 }
 
@@ -88,7 +88,7 @@
 
 .label {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: var(--fs-caption);
   color: var(--vx-white);
   opacity: 0.7;
   margin-bottom: 0.5rem;
@@ -109,7 +109,7 @@
   color: var(--vx-white);
   font-family: var(--font-main);
   font-weight: 900;
-  font-size: 1.5rem;
+  font-size: var(--fs-body);
   padding-bottom: 1rem;
   outline: none;
   transition: none !important; /* Shutter Cut */
@@ -145,7 +145,8 @@
     gap: 4rem;
   }
   .title {
-    font-size: 4rem;
+    font-size: 4rem; /* Mobile specific heading scale */
+    line-height: var(--lh-mega);
   }
 }
 

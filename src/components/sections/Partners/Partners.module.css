@@ -1,51 +1,167 @@
 .section {
   width: 100%;
-  min-height: 20vh;
-  padding: var(--respiro-v-lg) 0;
+  min-height: 60vh;
+  padding: 8vw 0;
   background-color: var(--vx-black);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
   position: relative;
+  perspective: 2000px; /* Essential for the Drum effect */
 }
 
-.marqueeWrapper {
+.perspectiveContainer {
+  position: relative;
+  width: 100%;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.gridOverlay {
+  position: absolute;
+  inset: -100px;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 1;
+  transform: translateZ(-200px) rotateX(10deg);
+  opacity: 0.5;
+}
+
+.rowsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  z-index: 2;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.marqueeRow {
   display: flex;
   white-space: nowrap;
   user-select: none;
+  transition: opacity 0.8s ease;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
 }
+
+.marqueeRow:nth-child(1) { transform: rotateX(-5deg) translateZ(50px); }
+.marqueeRow:nth-child(2) { transform: rotateX(0deg) translateZ(100px); }
+.marqueeRow:nth-child(3) { transform: rotateX(5deg) translateZ(50px); }
 
 .marqueeContent {
   display: flex;
   flex-shrink: 0;
-  gap: 4rem;
-  padding-right: 4rem;
+  align-items: center;
 }
 
 .partner {
+  position: relative;
   font-family: var(--font-main);
   font-weight: 900;
-  font-size: 8rem;
+  font-size: var(--font-size, var(--fs-mega));
   line-height: 1;
   text-transform: uppercase;
   color: var(--vx-white);
-  opacity: 0.1;
-  transition: opacity 0.4s steps(1);
   letter-spacing: -0.06em;
+  padding: 0 3rem;
+  display: flex;
+  align-items: center;
+  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  cursor: pointer;
+}
+
+/* Elite RGB Split Effect */
+.partner::before,
+.partner::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 3rem;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.3s;
+  pointer-events: none;
+}
+
+.partner::before {
+  color: #ff0000;
+  z-index: -1;
+  mix-blend-mode: screen;
+}
+
+.partner::after {
+  color: #0000ff;
+  z-index: -2;
+  mix-blend-mode: screen;
 }
 
 .partner:hover {
-  opacity: 1;
-  color: var(--vx-orange);
+  color: #fff;
+  transform: scale(1.1) translateZ(50px);
 }
 
-@media (max-width: 768px) {
-  .partner {
-    font-size: 4rem;
+.partner:hover::before {
+  opacity: 0.7;
+  transform: translate(-5px, -2px);
+}
+
+.partner:hover::after {
+  opacity: 0.7;
+  transform: translate(5px, 2px);
+}
+
+.dot {
+  margin-left: 5rem;
+  color: var(--vx-orange);
+  font-size: 0.25em;
+  opacity: 0.5;
+}
+
+.scanLine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(229, 81, 26, 0.4) 50%, 
+    transparent 100%
+  );
+  filter: blur(2px);
+  z-index: 10;
+  pointer-events: none;
+  animation: scan 12s linear infinite;
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100px) translateZ(200px); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(800px) translateZ(200px); opacity: 0; }
+}
+
+@media (max-width: 900px) {
+  .section {
+    perspective: 1000px;
+    padding: 15vw 0;
   }
-  .marqueeContent {
-    gap: 2rem;
-    padding-right: 2rem;
+  
+  .marqueeRow:nth-child(n) {
+    transform: none; /* Flatten for mobile performance */
+  }
+
+  .partner {
+    padding: 0 1.5rem;
+  }
+  
+  .dot {
+    margin-left: 2rem;
   }
 }

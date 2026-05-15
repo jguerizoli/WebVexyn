@@ -6,13 +6,24 @@
   letter-spacing: 0.1em;
   font-family: var(--font-mono);
   cursor: pointer;
-  transition: var(--transition-step);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: fit-content;
   border: none;
-  font-size: 0.8rem;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  
+  /* Shutter Cut: No transitions for state changes */
+  transition: none;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  filter: grayscale(1);
+  transform: none !important;
+  box-shadow: 2px 2px 0px 0px #000 !important;
 }
 
 /* Primary Variant: Arancio Argos with Hard Shadow */
@@ -22,12 +33,12 @@
   box-shadow: 4px 4px 0px 0px #000;
 }
 
-.primary:hover {
+.primary:not(:disabled):hover {
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0px 0px #000;
 }
 
-.primary:active {
+.primary:not(:disabled):active {
   transform: translate(0, 0);
   box-shadow: 2px 2px 0px 0px #000;
 }
@@ -39,12 +50,12 @@
   border: 4px solid var(--vx-abismo);
 }
 
-.ghost:hover {
+.ghost:not(:disabled):hover {
   background-color: var(--vx-abismo);
   transform: scale(1.02);
 }
 
-.ghost:active {
+.ghost:not(:disabled):active {
   transform: scale(0.98);
 }
 

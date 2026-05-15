@@ -1,5 +1,7 @@
 # Vexyn Project Context
 
+Vexyn é uma empresa de **soluções digitais de alto padrão**. Este documento serve como a única fonte de verdade para a terminologia técnica, invariantes arquiteturais e padrões de implementação do projeto.
+
 ## Glossary
 
 ### Results Section

@@ -1,14 +1,14 @@
 # Design System Document: Brutalismo Chic (Pure Form)
 
 ## 1. Overview & Creative North Star: "Brutalismo Chic"
-This system is the intersection of raw industrial form and high-fashion editorial precision. It is a **Digital Couture Gallery**. 
+Vexyn opera como uma boutique de **soluções digitais de alto padrão**. Este sistema é a intersecção entre a forma industrial bruta e a precisão editorial de luxo. É uma **Digital Couture Gallery**.
 
 **CRITICAL RULE:** We reject "Fake Tech" decorative noise. Do NOT use coordinates, technical labels (`REF. //`), system version markers, or simulated metadata. The aesthetic must remain clean, surgical, and pure, relying on architectural form and spacing rather than decorative "technical" artifacts.
 
 ---
 
 ## 2. Colors & Surface Logic: The High-Contrast Void
-The palette remains disciplined: **Abismo Black (#050505)** and **Arancio Argos (#E5511A)**. 
+A paleta permanece disciplinada: **Vexyn Void (#050505)** e **Vexyn Primary (#E5511A)**.
 
 ### The "No-Line" Rule (Pure)
 Lines do not exist unless they are structural. Separation is achieved through **Architectural Voids** (large black space). 
@@ -35,7 +35,7 @@ Brutalismo Chic uses typography as a structural material, following the mathemat
 
 ## 4. Architectural Spacing: The Intentional Void
 Spacing is our primary design tool.
-- **The 10% Rule:** Use massive side margins (minimum 10vw) to isolate content.
+- **The 4vw Rule:** Use consistent side margins (4vw) to isolate content and maintain the grid.
 - **Balance:** Achieve balance through weight and position, never symmetry.
 
 ---
@@ -54,7 +54,7 @@ Animations must feel mechanical and precise.
 - **Shadow:** Hard 4px block shadow. 
 
 ### Cards: Structural Blocks
-- **Visuals:** Integrated `Abismo Black` (#050505) surfaces. 
+- **Visuals:** Integrated `Vexyn Void` (#050505) surfaces. 
 - **Refinement:** Subtle top-down gradients are allowed to add weight and depth (e.g., from #0a0a0a to #050505).
 - **Depth:** Achieved via **2px Ghost Borders** and massive offsets.
 - **RESTRICTION:** NO rounded corners (0px only). NO technical IDs or metadata markers. Pure content only.

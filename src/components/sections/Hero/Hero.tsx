@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import VexynSymbol3D from '../../common/VexynSymbol/VexynSymbol3D';
 import Button from '../../common/Button/Button';
 import styles from './Hero.module.css';
+import { HERO_CONFIG } from './hero.config';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,40 +17,45 @@ const Hero: React.FC<HeroProps> = ({ scrollTo }) => {
   const container = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    const tl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1 } });
+    const { entrance, parallax } = HERO_CONFIG;
+    const tl = gsap.timeline();
 
     // Entrance Sequence: High-impact cuts
     tl.from(`.${styles.heroTitle}`, { 
-      x: -100, 
+      x: entrance.title.xOffset, 
       opacity: 0, 
-      delay: 0.2
+      delay: entrance.title.delay,
+      duration: entrance.title.duration,
+      ease: entrance.title.ease
     })
     .from(`.${styles.heroSubtitle}`, { 
-      y: 20, 
+      y: entrance.subtitle.yOffset, 
       opacity: 0, 
-      duration: 0.5 
-    }, '-=0.5')
+      duration: entrance.subtitle.duration,
+      ease: entrance.subtitle.ease
+    }, entrance.subtitle.overlap)
     .from(`.${styles.heroActions}`, { 
-      y: 20, 
+      y: entrance.actions.yOffset, 
       opacity: 0, 
-      duration: 0.5 
-    }, '-=0.3')
+      duration: entrance.actions.duration,
+      ease: entrance.actions.ease
+    }, entrance.actions.overlap)
     .from(`.${styles.heroSymbolWrapper}`, {
-      opacity: 0,
-      x: 100,
-      duration: 1.5,
-      ease: 'power2.inOut'
-    }, '-=1');
+      opacity: entrance.symbol.opacity,
+      x: entrance.symbol.xOffset,
+      duration: entrance.symbol.duration,
+      ease: entrance.symbol.ease
+    }, entrance.symbol.overlap);
 
     // Parallax Effect
     gsap.to(`.${styles.heroSymbolWrapper}`, {
-      y: -150,
+      y: parallax.symbolY,
       ease: 'none',
       scrollTrigger: {
         trigger: container.current,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: true
+        start: parallax.start,
+        end: parallax.end,
+        scrub: parallax.scrub
       }
     });
 
@@ -60,14 +66,14 @@ const Hero: React.FC<HeroProps> = ({ scrollTo }) => {
       <div className={styles.heroOverlay}></div>
       
       <div className={styles.heroContainer}>
-        <div className="max-w-4xl">
+        <div className={styles.heroContent}>
           <h1 className={styles.heroTitle}>
             <span className={styles.titleLine1}>design + code</span>
             <span className={styles.accent}>change the future</span>
           </h1>
           
-          <div className="flex items-center gap-8 mb-8" style={{ paddingLeft: '24px' }}>
-            <div className="w-12 h-[2px] bg-vx-orange opacity-40" />
+          <div className={styles.heroSubtitleWrapper}>
+            <div className={styles.heroLine} />
             <p className={styles.heroSubtitle}>
               We do both. Every day.
             </p>

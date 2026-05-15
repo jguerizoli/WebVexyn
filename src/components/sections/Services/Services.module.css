@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding: var(--respiro-v-lg) var(--respiro-h);
+  padding: var(--respiro-v-xl) var(--respiro-h);
 }
 
 
@@ -13,7 +13,7 @@
 .grid {
   display: grid;
   grid-template-columns: 0.4fr 1.6fr;
-  gap: 6rem; 
+  gap: var(--respiro-h);
   width: 100%;
   flex: 1;
   align-items: center;
@@ -30,24 +30,25 @@
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -0.06em;
-  line-height: 0.8;
+  line-height: var(--lh-mega);
   display: flex;
   flex-direction: column;
 }
 
 .titleLine1 {
-  font-size: clamp(3.5rem, 8vw, 6rem);
+  font-size: clamp(3.5rem, 8vw, var(--fs-mega));
 }
 
 .titleLine2 {
-  font-size: clamp(3.5rem, 8vw, 6rem);
+  font-size: clamp(3.5rem, 8vw, var(--fs-mega));
 }
 
 .cardsContainer {
   position: relative;
   width: 100%;
-  height: 380px; /* Matching new card height */
-  overflow: hidden; /* Prevent cards from leaking into Hero or other sections */
+  height: 440px; /* Card (380) + Bleed (60) */
+  padding: 30px 0;
+  overflow: hidden; /* Section protection restored */
   
   /* Inner Spotlight */
   background: radial-gradient(
@@ -56,21 +57,22 @@
     transparent 70%
   );
   
-  transition: opacity 0.4s ease;
+  transition: opacity 0.05s ease-out; /* Instant visibility on arrival */
 }
 
 /* Hide cards during teleportation (menu clicks) for a cleaner look */
 :global(body.is-navigating) .cardsContainer {
   opacity: 0;
   pointer-events: none;
+  transition: opacity 0.4s ease-in; /* Smooth fade-out when starting */
 }
 
 .stackCard {
   position: absolute;
-  top: 0;
+  top: 30px; /* Centered in the 440px container */
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 380px; /* Back to original slim height */
   will-change: clip-path, opacity, transform, filter;
 }
 
@@ -82,6 +84,16 @@
   
   .header {
     position: relative;
+    top: 0;
+  }
+
+  .cardsContainer {
+    height: 540px; /* Increased to accommodate 480px cards + padding */
+    overflow: visible; /* Allow mobile cards to breathe */
+  }
+
+  .stackCard {
+    height: 480px; /* Match mobile ServiceCard min-height */
     top: 0;
   }
 }

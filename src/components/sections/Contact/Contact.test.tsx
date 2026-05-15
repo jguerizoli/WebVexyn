@@ -7,8 +7,15 @@ import buttonStyles from '../../common/Button/Button.module.css';
 describe('Contact Component', () => {
   it('renders correctly with initial states', () => {
     render(<Contact />);
-    expect(screen.getByText(/READY TO START/i)).toBeDefined();
+    expect(screen.getByText(/START A/i)).toBeDefined();
     expect(screen.getByPlaceholderText(/YOUR FULL NAME/i)).toBeDefined();
+  });
+
+  it('should have ARIA attributes for accessibility', () => {
+    render(<Contact />);
+    const nameInput = screen.getByLabelText(/NAME/i);
+    expect(nameInput.getAttribute('aria-required')).toBe('true');
+    expect(nameInput.getAttribute('required')).not.toBeNull();
   });
 
   it('should use the standard primary button for submission', () => {
@@ -27,6 +34,7 @@ describe('Contact Component', () => {
     
     await user.click(submitBtn);
     
+    // [REQUIRED] is now aria-hidden="true" but still present in DOM
     const errorLabels = screen.getAllByText(/\[REQUIRED\]/i);
     expect(errorLabels.length).toBeGreaterThan(0);
   });

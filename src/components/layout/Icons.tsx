@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './Icons.module.css';
 
 
 
@@ -59,9 +60,13 @@ export const VexynWordmark: React.FC<React.SVGProps<SVGSVGElement>> = (props) =>
 
 
 
+
+
+
+
 export const VexynHeader: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => (
-    <div className={`flex flex-col items-center gap-12 ${className}`} {...props}>
-        <VexynMark className="w-[18%] h-auto drop-shadow-[0_0_15px_rgba(229,83,28,0.3)]" />
-        <VexynWordmark className="w-full h-auto text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]" />
+    <div className={`${styles.vexynHeader} ${className || ''}`} {...props}>
+        <VexynMark className={styles.vexynMark} />
+        <VexynWordmark className={styles.vexynWordmark} />
     </div>
 );

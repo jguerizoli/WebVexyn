@@ -68,17 +68,30 @@ export default function Contact() {
           </div>
         </div>
         
-        <form className={styles.form} onSubmit={handleSubmit}>
+        <form className={styles.form} onSubmit={handleSubmit} noValidate>
+          {/* ARIA Live Region for Status Updates */}
+          <div 
+            className={styles.srOnly} 
+            role="status" 
+            aria-live="polite"
+          >
+            {isSubmitting && 'Sending message...'}
+            {isSent && 'Message sent successfully.'}
+            {Object.keys(errors).length > 0 && `Form has ${Object.keys(errors).length} errors.`}
+          </div>
+
           <div className={`${styles.inputGroup} ${errors.name ? styles.hasError : ''}`}>
             <label htmlFor="name" className={styles.label}>
-              NAME {errors.name && <span className={styles.errorMarker}>[REQUIRED]</span>}
+              NAME {errors.name && <span className={styles.errorMarker} aria-hidden="true">[REQUIRED]</span>}
             </label>
             <input 
               type="text" 
               name="name"
               id="name"
+              required
+              aria-required="true"
               aria-describedby={errors.name ? "name-error" : undefined}
-              aria-invalid={errors.name}
+              aria-invalid={errors.name ? "true" : "false"}
               className={styles.input} 
               placeholder="YOUR FULL NAME" 
               value={formData.name}
@@ -88,30 +101,34 @@ export default function Contact() {
           </div>
           <div className={`${styles.inputGroup} ${errors.email ? styles.hasError : ''}`}>
             <label htmlFor="email" className={styles.label}>
-              EMAIL {errors.email && <span className={styles.errorMarker}>[REQUIRED]</span>}
+              EMAIL {errors.email && <span className={styles.errorMarker} aria-hidden="true">[REQUIRED]</span>}
             </label>
             <input 
               type="email" 
               name="email"
               id="email"
+              required
+              aria-required="true"
               aria-describedby={errors.email ? "email-error" : undefined}
-              aria-invalid={errors.email}
+              aria-invalid={errors.email ? "true" : "false"}
               className={styles.input} 
               placeholder="EMAIL@EXAMPLE.COM" 
               value={formData.email}
               onChange={handleInputChange}
             />
-            {errors.email && <span id="email-error" className={styles.srOnly}>Email is required</span>}
+            {errors.email && <span id="email-error" className={styles.srOnly}>A valid email is required</span>}
           </div>
           <div className={`${styles.inputGroup} ${errors.message ? styles.hasError : ''}`}>
             <label htmlFor="message" className={styles.label}>
-              MESSAGE {errors.message && <span className={styles.errorMarker}>[REQUIRED]</span>}
+              MESSAGE {errors.message && <span className={styles.errorMarker} aria-hidden="true">[REQUIRED]</span>}
             </label>
             <textarea 
               name="message"
               id="message"
+              required
+              aria-required="true"
               aria-describedby={errors.message ? "message-error" : undefined}
-              aria-invalid={errors.message}
+              aria-invalid={errors.message ? "true" : "false"}
               className={`${styles.input} ${styles.textarea}`} 
               placeholder="TELL US ABOUT YOUR PROJECT" 
               rows={4}
@@ -127,6 +144,7 @@ export default function Contact() {
             type="submit" 
             className={styles.submitBtn}
             disabled={isSubmitting || isSent}
+            aria-disabled={isSubmitting || isSent}
           >
             {isSubmitting ? '[SENDING...]' : isSent ? '[MESSAGE_SENT_SUCCESSFULLY]' : 'SEND MESSAGE'}
           </Button>

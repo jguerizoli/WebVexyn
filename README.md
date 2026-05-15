@@ -1,73 +1,39 @@
-# React + TypeScript + Vite
+# VEXYN | Digital Couture Gallery
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Vexyn é uma boutique de **soluções digitais de alto padrão**, focada na criação de experiências web que transcendem o convencional. Combinamos precisão arquitetônica com estética editorial para entregar produtos digitais que são, ao mesmo tempo, ferramentas de performance e peças de design.
 
-Currently, two official plugins are available:
+## 📐 Identidade Visual: Brutalismo Chic
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Nossa filosofia de design, o **Brutalismo Chic**, é definida pelo equilíbrio entre a forma bruta industrial e o refinamento da alta costura digital.
 
-## React Compiler
+-   **Contraste Absoluto**: A tensão visual entre o `Vexyn Void (#050505)` e o `Vexyn Primary (#E5511A)`.
+-   **Tipografia Swiss Grid**: Estrutura matemática rigorosa baseada no Estilo Tipográfico Internacional.
+-   **Pureza de Forma**: Rejeitamos ruído decorativo. Cada elemento no grid tem um propósito funcional e estético claro.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠️ Stack Tecnológica
 
-## Expanding the ESLint configuration
+-   **Core**: React + TypeScript
+-   **Build Tool**: Vite
+-   **Estilização**: Tailwind CSS (estratégico) + CSS puro (cirúrgico)
+-   **Animação**: GSAP (ScrollTrigger) & Framer Motion
+-   **Qualidade**: Vitest (Unit Testing)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📁 Estrutura do Projeto
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Consulte o arquivo [PROJECT_INDEX.md](./PROJECT_INDEX.md) para uma visão detalhada da arquitetura de pastas e componentes.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🚀 Desenvolvimento
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# Instalação de dependências
+npm install
+
+# Iniciar servidor de desenvolvimento
+npm run dev
+
+# Executar testes
+npm test
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+*Vexyn: Engineering Aesthetic Authority.*

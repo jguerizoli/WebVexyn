@@ -4,7 +4,7 @@
   height: 380px;
   background: #050505;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 4rem;
+  padding: 2.5rem 4rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -49,7 +49,7 @@
   height: 100%;
   display: grid;
   grid-template-rows: auto 1fr;
-  gap: 3rem;
+  gap: 1.5rem;
 }
 
 .topSection {
@@ -66,14 +66,14 @@
 
 .title {
   font-family: var(--font-main);
-  font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+  font-size: clamp(2.5rem, 5.5vw, var(--fs-mega));
   font-weight: 900;
-  line-height: 0.8; 
+  line-height: 0.95; /* Increased from var(--lh-mega) to prevent clipping accents */
   letter-spacing: -0.06em;
   text-transform: uppercase;
   color: #fff;
   margin: 0;
-  padding: 0.05em 0;
+  padding: 0.2em 0; /* Increased from 0.15em */
   
   /* Surgical gradient */
   background: linear-gradient(to bottom, #fff 0%, #888 100%);
@@ -92,12 +92,12 @@
 .subtitle {
   font-family: var(--font-mono);
   font-weight: 500;
-  font-size: 0.8rem;
+  font-size: var(--fs-caption);
   color: rgba(255, 255, 255, 0.4);
   text-transform: uppercase;
   letter-spacing: 0.15em;
   max-width: 400px;
-  line-height: 1.4;
+  line-height: var(--lh-caption);
 }
 
 .bottomSection {
@@ -124,7 +124,7 @@
 .listItem {
   font-family: var(--font-mono);
   font-weight: 500;
-  font-size: 0.8rem;
+  font-size: var(--fs-caption);
   color: rgba(255, 255, 255, 0.85); /* Increased readability */
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -173,12 +173,12 @@
   .card {
     padding: 2.5rem;
     height: auto;
-    min-height: 480px;
+    min-height: 480px; /* Essential to match container height */
   }
   
   .bottomSection {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 2.5rem; /* Reduced slightly to fit better */
   }
   
   .list {

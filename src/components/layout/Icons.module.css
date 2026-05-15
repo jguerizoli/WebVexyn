@@ -1,0 +1,19 @@
+.vexynHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+}
+
+.vexynMark {
+  width: 18%;
+  height: auto;
+  filter: drop-shadow(0 0 15px rgba(229, 83, 28, 0.3));
+}
+
+.vexynWordmark {
+  width: 100%;
+  height: auto;
+  color: #fff;
+  filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.1));
+}

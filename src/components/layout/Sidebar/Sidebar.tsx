@@ -1,5 +1,5 @@
 import React from 'react';
-import { Hexagon, Ruler, Circle, Palette, Type, Grid3x3, Printer, Info, Shapes, Camera } from 'lucide-react';
+import { Hexagon, Ruler, Circle, Grid3x3, Info } from 'lucide-react';
 import { VexynMark } from '../Icons';
 import styles from './Sidebar.module.css';
 

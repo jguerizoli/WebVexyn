@@ -21,14 +21,15 @@
 }
 
 .heroTitle {
-  font-size: clamp(3.5rem, 8vw, 6rem);
+  font-size: clamp(3.5rem, 8vw, var(--fs-mega));
   font-family: var(--font-main);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -0.06em;
-  line-height: 0.8;
+  line-height: var(--lh-mega);
   color: #fff;
   margin-bottom: var(--respiro-v-sm);
+  will-change: transform, opacity;
 }
 
 .titleLine1 {
@@ -47,17 +48,19 @@
 .heroSubtitle {
   font-family: var(--font-mono);
   color: #fff;
-  font-size: 1rem;
+  font-size: var(--fs-body);
   letter-spacing: 0.2em;
   margin-bottom: 0;
   text-transform: uppercase;
   opacity: 0.8;
+  will-change: transform, opacity;
 }
 
 .heroActions {
   display: flex;
   gap: 1.5rem;
   margin-top: 6rem; /* Further from subtitle for clear CTA */
+  will-change: transform, opacity;
 }
 
 .heroSymbolWrapper {
@@ -67,6 +70,7 @@
   z-index: 2;
   pointer-events: none;
   overflow: visible;
+  will-change: transform, opacity;
 }
 
 .heroSymbol {
@@ -75,13 +79,31 @@
   align-items: center;
 }
 
+.heroContent {
+  max-width: 56rem;
+}
+
+.heroSubtitleWrapper {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.heroLine {
+  width: 3rem;
+  height: 2px;
+  background-color: var(--vx-orange);
+  opacity: 0.4;
+}
+
 @media (max-width: 968px) {
   .heroSection {
     padding: 12rem 5%;
   }
   
   .heroTitle {
-    line-height: 0.85;
+    line-height: var(--lh-mega);
   }
   
   .heroActions {

@@ -12,7 +12,7 @@ vi.mock('gsap', () => ({
       set: vi.fn().mockReturnThis(),
     })),
     utils: {
-      toArray: vi.fn((selector) => []),
+      toArray: vi.fn((_selector) => []),
     },
     set: vi.fn(),
     context: vi.fn((fn) => {
@@ -28,7 +28,7 @@ vi.mock('gsap', () => ({
       set: vi.fn().mockReturnThis(),
     })),
     utils: {
-      toArray: vi.fn((selector) => []),
+      toArray: vi.fn((_selector) => []),
     },
     set: vi.fn(),
     context: vi.fn((fn) => {

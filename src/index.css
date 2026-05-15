@@ -1,10 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@900&family=Geist:wght@300&family=Geist+Mono:wght@500;700&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-
 :root {
   --vx-orange: #E5511A;
   --vx-black: #050505;
@@ -21,8 +16,8 @@
   --font-mono: 'Geist Mono', monospace;
   
   /* Architectural Respiro (Breathing Room) */
-  --respiro-h: 4vw; /* Tighter horizontal bleed */
-  --respiro-v-xl: 12rem; /* Massive section gaps */
+  --respiro-h: 4vw; /* Horizontal bleed */
+  --respiro-v-xl: 4vw; /* Section gaps */
   --respiro-v-lg: 2rem;  /* Major internal gaps */
   --respiro-v-md: 1rem;  /* Content grouping */
   --respiro-v-sm: 0.5rem;  /* Small grouping */
@@ -30,8 +25,17 @@
   --transition-step: all 0.1s step-end;
   --transition-chic: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
+  /* Swiss Grid Typography (72pt/12pt/9.6pt) */
+  --fs-mega: 6rem;    /* 72pt */
+  --fs-body: 1rem;    /* 12pt */
+  --fs-caption: 0.8rem; /* 9.6pt */
+  
+  --lh-mega: 0.85;
+  --lh-body: 1.2;
+  --lh-caption: 1.1;
+
   font-family: var(--font-body);
-  line-height: 1.1; 
+  line-height: var(--lh-body); 
   font-weight: 300;
 
   color-scheme: dark;
@@ -67,9 +71,15 @@ body {
   font-family: var(--font-body);
 }
 
+body.is-navigating {
+  pointer-events: none !important;
+  cursor: wait !important;
+}
+
 h1, h2, h3 {
   font-family: var(--font-main);
   font-weight: 900;
+  line-height: var(--lh-mega);
 }
 
 * {
@@ -111,6 +121,10 @@ h1, h2, h3 {
     transparent 60%
   );
   opacity: 1; 
+  
+  /* Hardware Acceleration (GPU) - Reducing scroll jitter */
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 section {

@@ -1,1 +1,1 @@
-export { default } from './PinnedCarousel';
+export { default } from './Services';

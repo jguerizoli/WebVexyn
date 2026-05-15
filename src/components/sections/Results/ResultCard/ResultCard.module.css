@@ -14,7 +14,6 @@
   background: #050505;
   border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 2rem 2rem 1.6rem;
-  border-radius: 24px;
   box-shadow: 
     0 10px 30px rgba(0,0,0,0.5),
     0 0 0 1px rgba(255,255,255,0.02);
@@ -38,19 +37,19 @@
 }
 
 .quoteMark {
-  font-size: 2rem;
+  font-size: var(--fs-body);
   color: var(--vx-orange, #E5511A);
   font-family: var(--font-main);
-  line-height: 0;
+  line-height: 1.1; /* Increased from var(--lh-mega) to avoid clipping */
   margin-bottom: 0.8rem;
 }
 
 .text {
-  font-size: 1rem;
+  font-size: var(--fs-body);
   font-weight: 400;
   margin-bottom: 0.8rem;
   color: var(--vx-white, #ffffff);
-  line-height: 1.5;
+  line-height: var(--lh-body);
 }
 
 .footer {
@@ -58,7 +57,8 @@
   align-items: center;
   gap: 1rem;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
   color: var(--vx-light-grey, #a0a0a0);
 }
 
@@ -78,16 +78,21 @@
 
 @media (max-width: 768px) {
   .card {
-    width: 95%;
-    padding: 2rem;
+    width: 90vw; /* Better fit for mobile */
+    max-width: none;
+    padding: 0; /* Let .inner handle padding */
   }
   
+  .inner {
+    padding: 1.5rem;
+  }
+
   .text {
-    font-size: 1rem;
+    font-size: var(--fs-body);
   }
 
   .metric {
-    top: 2rem;
-    right: 2rem;
+    top: 1.5rem;
+    right: 1.5rem;
   }
 }

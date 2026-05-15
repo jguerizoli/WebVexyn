@@ -24,7 +24,7 @@ describe('Button Component', () => {
   });
 
   it('renders with ghost variant when specified', () => {
-    const { container } = render(<Button variant="ghost">Ghost Button</Button>);
+    render(<Button variant="ghost">Ghost Button</Button>);
     // Since we use CSS Modules, we'll check for the variant class
     // In a real TDD, we might import the styles object in the test.
   });
