@@ -109,6 +109,7 @@ export default function Partners() {
 
     // 2. Kinetic Scroll Skew Logic
     ScrollTrigger.create({
+      id: "partners",
       trigger: sectionRef.current,
       onUpdate: (self) => {
         const vel = self.getVelocity() / 100;

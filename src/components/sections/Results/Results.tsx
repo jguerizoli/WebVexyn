@@ -52,13 +52,15 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
+        id: "social-proof", // Explicit ID for global snap lookup
         start: "top top",
         end: orchestration.scrollLength,
         pin: true,
         pinSpacing: true,
         scrub: orchestration.scrub,
         invalidateOnRefresh: true,
-        anticipatePin: 1,
+        anticipatePin: 1, // High-performance locking
+        snap: 1 / reviews.length, // Snap to each card in the fan
       }
     });
 

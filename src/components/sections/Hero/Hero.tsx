@@ -49,7 +49,20 @@ const Hero: React.FC<HeroProps> = ({ scrollTo }) => {
       ease: entrance.symbol.ease
     }, entrance.symbol.overlap);
 
-    // Parallax Effect
+    // Parallax Effect & Hero Pinning
+    const heroST = ScrollTrigger.create({
+      trigger: container.current,
+      id: "hero", // Crucial for global snap synchronization
+      start: "top top",
+      end: "+=50%", // Pin for 50% of viewport height
+      pin: true,
+      anticipatePin: 1,
+      snap: 1, // Full-page snap for Hero
+      onUpdate: (self) => {
+        // Optional: Can tie entrance progress here if needed
+      }
+    });
+
     gsap.to(`.${styles.heroSymbolWrapper}`, {
       y: parallax.symbolY,
       ease: 'none',
@@ -61,6 +74,10 @@ const Hero: React.FC<HeroProps> = ({ scrollTo }) => {
       }
     });
 
+    return () => {
+      tl.kill();
+      heroST.kill();
+    };
   }, { scope: container });
 
   return (

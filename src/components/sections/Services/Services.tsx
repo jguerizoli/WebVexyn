@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -17,6 +17,15 @@ interface ServicesProps {
 const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
   const { t } = useTranslation();
   const container = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
+
+  // Responsive listener for UI-only toggles
+  React.useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const SERVICES_DATA = [
     {
@@ -55,158 +64,145 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
       cta: t('services.items.branding.cta')
     }
   ];
+  
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const timelineRef = useRef<gsap.core.Timeline | null>(null);
-  const activeIndexRef = useRef(0);
-  const isHoveredRef = useRef(false);
+  const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
+  const autoTimelineRef = useRef<gsap.core.Timeline | null>(null);
 
   const goToCard = (index: number) => {
-    if (!timelineRef.current) return;
-    const tl = timelineRef.current;
-    const currentIndex = activeIndexRef.current;
-
-    const onNavComplete = () => {
-      if (!isHoveredRef.current) tl.play();
-    };
-
-    if (currentIndex === SERVICES_DATA.length - 1 && index === 0) {
-      tl.tweenTo(tl.duration(), { 
-        duration: 1, 
-        ease: "power3.inOut",
-        onComplete: () => { tl.play(0); onNavComplete(); }
+    if (isDesktop && scrollTriggerRef.current) {
+      const st = scrollTriggerRef.current;
+      const start = st.start;
+      const end = st.end;
+      const totalScroll = end - start;
+      const targetScroll = start + (index / (SERVICES_DATA.length - 1)) * totalScroll;
+      
+      gsap.to(window, {
+        scrollTo: targetScroll,
+        duration: 1.2,
+        ease: "power3.inOut"
       });
-    } 
-    else if (currentIndex === 0 && index === SERVICES_DATA.length - 1) {
-      tl.pause(); tl.progress(1);
-      tl.tweenTo(`card-${index}`, { duration: 1, ease: "power3.inOut", onComplete: onNavComplete });
-    }
-    else {
-      tl.tweenTo(`card-${index}`, { duration: 1, ease: "power3.inOut", onComplete: onNavComplete });
+    } else if (autoTimelineRef.current) {
+      const tl = autoTimelineRef.current;
+      tl.tweenTo(`card-${index}`, { duration: 1, ease: "power3.inOut" });
     }
   };
 
   const handlePrev = () => {
-    const prev = (activeIndexRef.current - 1 + SERVICES_DATA.length) % SERVICES_DATA.length;
+    const prev = (activeIndex - 1 + SERVICES_DATA.length) % SERVICES_DATA.length;
     goToCard(prev);
   };
 
   const handleNext = () => {
-    const next = (activeIndexRef.current + 1) % SERVICES_DATA.length;
+    const next = (activeIndex + 1) % SERVICES_DATA.length;
     goToCard(next);
   };
 
   useGSAP(() => {
     const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
-    
-    // Initial Prep
-    gsap.set(cards, { yPercent: 105, opacity: 0, zIndex: 10, force3D: true });
-    gsap.set(cards[0], { yPercent: 0, opacity: 1, zIndex: 50 });
-    gsap.set('#services-progress', { scaleX: 0, transformOrigin: 'left' });
+    const mm = gsap.matchMedia();
 
-    const tl = gsap.timeline({ 
-      repeat: -1, 
-      paused: true,
-      defaults: { ease: "expo.inOut" } 
-    });
-    timelineRef.current = tl;
+    // --- DESKTOP: SCRUB ORCHESTRATION ---
+    mm.add("(min-width: 1024px)", () => {
+      // Setup Initial State
+      gsap.set(cards, { yPercent: 105, opacity: 0, zIndex: 10 });
+      gsap.set(cards[0], { yPercent: 0, opacity: 1, zIndex: 50 });
 
-    const markers = container.current?.querySelectorAll(`.${styles.marker}`);
-
-    // --- INITIAL REVEAL (First Card) ---
-    const fCard = cards[0];
-    const fTitle = fCard.querySelector('h3');
-    const fSubtitle = fCard.querySelector('p');
-    const fListItems = fCard.querySelectorAll('li');
-    const fCta = fCard.querySelector('button');
-
-    tl.add('init');
-    if (fTitle || fSubtitle) tl.from([fTitle, fSubtitle].filter(Boolean), { y: 20, opacity: 0, duration: 0.6, stagger: 0.1 }, "init+=0.2");
-    if (fListItems.length > 0) tl.from(fListItems, { y: 15, opacity: 0, duration: 0.5, stagger: 0.05 }, "init+=0.3");
-    if (fCta) tl.from(fCta, { y: 10, opacity: 0, duration: 0.5 }, "init+=0.5");
-
-    cards.forEach((card, i) => {
-      const nextIndex = (i + 1) % cards.length;
-      const current = card;
-      const next = cards[nextIndex];
-      const label = `card-${i}`;
-      const transLabel = `trans-${i}`;
-
-      tl.add(label);
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: container.current,
+          id: "services", // Explicit ID for global snap lookup
+          start: "top top",
+          end: `+=${SERVICES_DATA.length * SERVICES_CONFIG.orchestration.SCROLL_PER_CARD}`,
+          pin: true,
+          scrub: SERVICES_CONFIG.orchestration.scrub,
+          anticipatePin: 1, // Eliminates the "jump" or delay before pinning
+          snap: 1 / (SERVICES_DATA.length - 1), // Snap to each card
+          onUpdate: (self) => {
+            const progress = self.progress;
+            const newIndex = Math.round(progress * (SERVICES_DATA.length - 1));
+            if (newIndex !== activeIndex) {
+              setActiveIndex(newIndex);
+              // Update counter text directly for performance
+              const counterEl = document.getElementById('services-current');
+              if (counterEl) counterEl.innerText = (newIndex + 1).toString().padStart(2, '0');
+            }
+          },
+        }
+      });
       
-      tl.call(() => {
-        activeIndexRef.current = i;
-        markers?.forEach((m, idx) => {
-          if (idx === i) m.classList.add(styles.markerActive);
-          else m.classList.remove(styles.markerActive);
-        });
-      }, [], label);
+      scrollTriggerRef.current = tl.scrollTrigger!;
 
-      // Timer Bar
-      tl.fromTo('#services-progress', { scaleX: 0 }, { scaleX: 1, duration: 3, ease: "none" }, label);
+      cards.forEach((card, i) => {
+        if (i === 0) return; // First card is already visible
 
-      // Transition Start
-      tl.add(transLabel);
-      
-      // Update Counter
-      tl.to('#services-current', {
-        innerText: (nextIndex + 1).toString().padStart(2, '0'),
-        snap: { innerText: 1 },
-        duration: 0.1
-      }, `${transLabel}+=0.5`);
+        const prev = cards[i - 1];
+        const current = card;
 
-      // Prepare & Move Cards
-      tl.set(next, { yPercent: 105, opacity: 1, zIndex: 60 }, transLabel);
-      tl.to(current, { yPercent: -105, opacity: 0, duration: 1 }, transLabel);
-      tl.to(next, { yPercent: 0, opacity: 1, duration: 1 }, transLabel);
+        // Transition Out Previous & In Current
+        tl.to(prev, { 
+          yPercent: SERVICES_CONFIG.transitions.exitYPercent, 
+          opacity: 0, 
+          duration: 1 
+        }, i - 0.5);
+        
+        tl.to(current, { 
+          yPercent: 0, 
+          opacity: 1, 
+          zIndex: 50 + i,
+          duration: 1 
+        }, i - 0.5);
 
-      // --- REVEAL NEXT CONTENT DURING TRANSITION ---
-      const nTitle = next.querySelector('h3');
-      const nSubtitle = next.querySelector('p');
-      const nListItems = next.querySelectorAll('li');
-      const nCta = next.querySelector('button');
+        // Content Reveal for current card
+        const title = current.querySelector('h3');
+        const subtitle = current.querySelector('p');
+        const listItems = current.querySelectorAll('li');
+        const cta = current.querySelector('button');
 
-      if (nTitle || nSubtitle) {
-        tl.fromTo([nTitle, nSubtitle].filter(Boolean), 
-          { y: 20, opacity: 0 }, 
-          { y: 0, opacity: 1, duration: 0.5, stagger: 0.05, ease: "power2.out" }, 
-          `${transLabel}+=0.4`
-        );
-      }
-      if (nListItems.length > 0) {
-        tl.fromTo(nListItems, 
-          { y: 15, opacity: 0 }, 
-          { y: 0, opacity: 1, duration: 0.4, stagger: 0.03, ease: "power2.out" }, 
-          `${transLabel}+=0.5`
-        );
-      }
-      if (nCta) {
-        tl.fromTo(nCta, 
-          { y: 10, opacity: 0 }, 
-          { y: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 
-          `${transLabel}+=0.7`
-        );
-      }
+        if (title) tl.from(title, { y: 20, opacity: 0, duration: 0.4 }, i - 0.2);
+        if (subtitle) tl.from(subtitle, { y: 15, opacity: 0, duration: 0.4 }, i - 0.15);
+        if (listItems.length) tl.from(listItems, { y: 10, opacity: 0, duration: 0.3, stagger: 0.05 }, i - 0.1);
+        if (cta) tl.from(cta, { y: 10, opacity: 0, duration: 0.3 }, i);
+      });
 
-      tl.set(current, { zIndex: 10, yPercent: 105, opacity: 0 });
+      return () => {
+        tl.kill();
+        scrollTriggerRef.current = null;
+      };
     });
 
-    const st = ScrollTrigger.create({
-      trigger: container.current,
-      start: "top top",
-      end: `+=${cards.length * 100}%`,
-      pin: true,
-      onEnter: () => tl.play(),
-      onEnterBack: () => tl.play(),
-      onLeave: () => tl.pause(),
-      onLeaveBack: () => tl.pause(),
+    // --- MOBILE: AUTO CAROUSEL FALLBACK ---
+    mm.add("(max-width: 1023px)", () => {
+      gsap.set(cards, { yPercent: 105, opacity: 0, zIndex: 10 });
+      gsap.set(cards[0], { yPercent: 0, opacity: 1, zIndex: 50 });
+
+      const tl = gsap.timeline({ 
+        repeat: -1,
+        defaults: { ease: "expo.inOut" } 
+      });
+      autoTimelineRef.current = tl;
+
+      cards.forEach((card, i) => {
+        const nextIndex = (i + 1) % cards.length;
+        const current = card;
+        const next = cards[nextIndex];
+        const label = `card-${i}`;
+
+        tl.add(label);
+        tl.call(() => setActiveIndex(i), [], label);
+        
+        // Progress bar simulation for mobile
+        tl.fromTo('#services-progress-auto', { scaleX: 0 }, { scaleX: 1, duration: 3, ease: "none" }, label);
+
+        tl.to(current, { yPercent: -105, opacity: 0, duration: 1 });
+        tl.to(next, { yPercent: 0, opacity: 1, zIndex: 60, duration: 1 }, "<");
+        tl.set(current, { zIndex: 10, yPercent: 105, opacity: 0 });
+      });
+
+      return () => tl.kill();
     });
 
-    if (ScrollTrigger.isInViewport(container.current!)) tl.play();
-
-    return () => {
-      tl.kill();
-      st.kill();
-    };
+    return () => mm.revert();
   }, { scope: container });
 
   return (
@@ -220,14 +216,22 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
           
           <div className={styles.indicator}>
             <div className={styles.counter}>
-              <span className={styles.currentNum} id="services-current">01</span>
+              <span className={styles.currentNum} id="services-current">{(activeIndex + 1).toString().padStart(2, '0')}</span>
               <span className={styles.separator}>/</span>
               <span className={styles.totalNum}>{SERVICES_DATA.length.toString().padStart(2, '0')}</span>
             </div>
             
             <div className={styles.progressContainer}>
               <div className={styles.progressBar}>
-                <div className={styles.progressFill} id="services-progress" />
+                <div className={styles.progressFill} id="services-progress" style={{ 
+                  transform: `scaleX(${activeIndex / (SERVICES_DATA.length - 1)})`,
+                  transformOrigin: 'left',
+                  transition: 'transform 0.5s cubic-bezier(0.19, 1, 0.22, 1)',
+                  display: isDesktop ? 'block' : 'none'
+                }} />
+                <div className={styles.progressFill} id="services-progress-auto" style={{ 
+                  display: !isDesktop ? 'block' : 'none'
+                }} />
               </div>
               
               <div className={styles.navControls}>
@@ -246,7 +250,11 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
 
             <div className={styles.markers}>
               {SERVICES_DATA.map((_, i) => (
-                <button key={i} className={styles.marker} onClick={() => goToCard(i)} />
+                <button 
+                  key={i} 
+                  className={`${styles.marker}${activeIndex === i ? ` ${styles.markerActive}` : ''}`} 
+                  onClick={() => goToCard(i)} 
+                />
               ))}
             </div>
           </div>
@@ -254,8 +262,8 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
 
         <div 
           className={styles.cardsContainer}
-          onMouseEnter={() => { timelineRef.current?.pause(); isHoveredRef.current = true; }}
-          onMouseLeave={() => { timelineRef.current?.play(); isHoveredRef.current = false; }}
+          onMouseEnter={() => autoTimelineRef.current?.pause()}
+          onMouseLeave={() => autoTimelineRef.current?.play()}
         >
           {SERVICES_DATA.map((service, i) => (
             <div key={service.id} ref={(el) => { cardsRef.current[i] = el; }} className={styles.stackCard}>
