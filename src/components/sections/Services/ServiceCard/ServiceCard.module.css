@@ -82,6 +82,9 @@
   -webkit-text-fill-color: transparent;
   display: block;
   transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  width: 100%;
 }
 
 .card:hover .title {

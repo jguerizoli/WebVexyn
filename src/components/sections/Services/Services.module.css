@@ -12,7 +12,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: 0.4fr 1.6fr;
+  grid-template-columns: 0.4fr minmax(0, 1.6fr);
   gap: var(--respiro-h);
   width: 100%;
   flex: 1;
@@ -46,6 +46,7 @@
 .cardsContainer {
   position: relative;
   width: 100%;
+  max-width: 900px;
   min-height: 420px;
   height: auto;
   padding: 0;
