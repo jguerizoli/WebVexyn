@@ -46,9 +46,10 @@
 .cardsContainer {
   position: relative;
   width: 100%;
-  height: 440px; /* Card (380) + Bleed (60) */
-  padding: 30px 0;
-  overflow: hidden; /* Section protection restored */
+  min-height: 420px;
+  height: auto;
+  padding: 0;
+  overflow: visible; /* Let content breathe */
   
   /* Inner Spotlight */
   background: radial-gradient(
@@ -57,22 +58,22 @@
     transparent 70%
   );
   
-  transition: opacity 0.05s ease-out; /* Instant visibility on arrival */
+  transition: opacity 0.05s ease-out;
 }
 
 /* Hide cards during teleportation (menu clicks) for a cleaner look */
 :global(body.is-navigating) .cardsContainer {
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.4s ease-in; /* Smooth fade-out when starting */
+  transition: opacity 0.4s ease-in;
 }
 
 .stackCard {
   position: absolute;
-  top: 30px; /* Centered in the 440px container */
+  top: 0;
   left: 0;
   width: 100%;
-  height: 380px; /* Back to original slim height */
+  height: auto;
   will-change: clip-path, opacity, transform, filter;
 }
 

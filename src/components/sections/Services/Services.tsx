@@ -64,6 +64,7 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
   ];
   
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
   const [isAnimating, setIsAnimating] = useState(false);
 
   const goToCard = (index: number) => {
@@ -73,7 +74,7 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
     const current = cards[activeIndex];
     const next = cards[index];
     
-    if (!current || !next) return;
+    if (!current || !next || !cardsContainerRef.current) return;
 
     setIsAnimating(true);
     setActiveIndex(index);
@@ -82,9 +83,22 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
     const counterEl = document.getElementById('services-current');
     if (counterEl) counterEl.innerText = (index + 1).toString().padStart(2, '0');
 
+    // Adaptive Height Logic: Measure the content of the next card
+    // We set next to visibility: hidden and height: auto temporarily to measure
+    gsap.set(next, { visibility: "hidden", display: "block", position: "relative" });
+    const nextHeight = next.offsetHeight;
+    gsap.set(next, { visibility: "visible", display: "block", position: "absolute" });
+
     const tl = gsap.timeline({
       onComplete: () => setIsAnimating(false)
     });
+
+    // Animate the container height to fit the next card
+    tl.to(cardsContainerRef.current, {
+      height: nextHeight,
+      duration: 0.6,
+      ease: "power2.inOut"
+    }, 0);
 
     // 1. Transition Out Previous
     tl.to(current, {
@@ -94,7 +108,7 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
       ease: "power2.inOut",
       pointerEvents: "none",
       zIndex: 10
-    });
+    }, 0);
 
     // 2. Transition In Next
     tl.fromTo(next,
@@ -106,7 +120,7 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
         ease: "power2.inOut",
         pointerEvents: "auto"
       },
-      "-=0.4" // Heavy overlap for crossfade effect
+      "-=0.4"
     );
 
     // 3. Force Content Reveal (fixes the "incomplete" bug)
@@ -147,6 +161,11 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
       start: "top top",
       pin: false // Single stop section
     });
+
+    // Set initial container height to match first card
+    if (cardsContainerRef.current && cards[0]) {
+      gsap.set(cardsContainerRef.current, { height: cards[0].offsetHeight });
+    }
 
   }, { scope: container });
 
@@ -192,7 +211,7 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
           </div>
         </header>
  
-        <div className={styles.cardsContainer}>
+        <div ref={cardsContainerRef} className={styles.cardsContainer}>
           {SERVICES_DATA.map((service, i) => (
             <div key={service.id} ref={(el) => { cardsRef.current[i] = el; }} className={styles.stackCard}>
               <ServiceCard service={service} index={i + 1} onCtaClick={() => scrollTo('contact-form')} />
