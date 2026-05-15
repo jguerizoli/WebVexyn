@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding: var(--respiro-v-xl) var(--respiro-h);
+  padding: 2rem var(--respiro-h) var(--respiro-v-xl);
 }
 
 
@@ -87,6 +87,18 @@
     top: 0;
   }
 
+  .indicator {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .progressBar {
+    width: 100px;
+  }
+
   .cardsContainer {
     height: 540px; /* Increased to accommodate 480px cards + padding */
     overflow: visible; /* Allow mobile cards to breathe */
@@ -96,4 +108,121 @@
     height: 480px; /* Match mobile ServiceCard min-height */
     top: 0;
   }
+}
+
+.indicator {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.counter {
+  font-family: var(--font-main);
+  font-weight: 700;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.currentNum {
+  color: #fff;
+}
+
+.separator {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.totalNum {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1rem;
+}
+
+.progressContainer {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.progressBar {
+  flex: 1;
+  max-width: 120px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.navControls {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.navBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  padding: 0;
+}
+
+.navBtn:hover {
+  background: #fff;
+  color: #000;
+  transform: scale(1.1);
+  border-color: #fff;
+}
+
+.navBtn svg {
+  transition: transform 0.3s ease;
+}
+
+.navBtn:active svg {
+  transform: scale(0.8);
+}
+
+.progressFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background: #fff;
+  transform: scaleX(0.33);
+  transform-origin: left;
+}
+
+.markers {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 2rem;
+}
+
+.marker {
+  width: 32px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  padding: 8px 0; /* Larger hit area */
+  background-clip: content-box; /* Keep line thin but hit area large */
+}
+
+.marker:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.markerActive {
+  background-color: #fff;
+  width: 60px;
 }

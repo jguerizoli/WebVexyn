@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useTranslation } from 'react-i18next';
 import VexynSymbol3D from '../../common/VexynSymbol/VexynSymbol3D';
 import Button from '../../common/Button/Button';
 import styles from './Hero.module.css';
@@ -14,6 +15,7 @@ interface HeroProps {
 }
 
 const Hero: React.FC<HeroProps> = ({ scrollTo }) => {
+  const { t } = useTranslation();
   const container = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
@@ -31,7 +33,7 @@ const Hero: React.FC<HeroProps> = ({ scrollTo }) => {
     .from(`.${styles.heroSubtitle}`, { 
       y: entrance.subtitle.yOffset, 
       opacity: 0, 
-      duration: entrance.subtitle.duration,
+      duration: entrance.subtitle.duration, 
       ease: entrance.subtitle.ease
     }, entrance.subtitle.overlap)
     .from(`.${styles.heroActions}`, { 
@@ -68,14 +70,14 @@ const Hero: React.FC<HeroProps> = ({ scrollTo }) => {
       <div className={styles.heroContainer}>
         <div className={styles.heroContent}>
           <h1 className={styles.heroTitle}>
-            <span className={styles.titleLine1}>design + code</span>
-            <span className={styles.accent}>change the future</span>
+            <span className={styles.titleLine1}>{t('hero.title1')}</span>
+            <span className={styles.accent}>{t('hero.title2')}</span>
           </h1>
           
           <div className={styles.heroSubtitleWrapper}>
             <div className={styles.heroLine} />
             <p className={styles.heroSubtitle}>
-              We do both. Every day.
+              {t('hero.subtitle')}
             </p>
           </div>
           
@@ -85,14 +87,14 @@ const Hero: React.FC<HeroProps> = ({ scrollTo }) => {
               variant="primary"
               size="lg"
             >
-              Explore Services
+              {t('hero.cta_services')}
             </Button>
             <Button 
               onClick={() => scrollTo('contact-form')} 
               variant="ghost"
               size="lg"
             >
-              Get in Touch
+              {t('hero.cta_contact')}
             </Button>
           </div>
         </div>

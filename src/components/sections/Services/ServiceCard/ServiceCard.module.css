@@ -68,12 +68,12 @@
   font-family: var(--font-main);
   font-size: clamp(2.5rem, 5.5vw, var(--fs-mega));
   font-weight: 900;
-  line-height: 0.95; /* Increased from var(--lh-mega) to prevent clipping accents */
+  line-height: 1.1; /* Fine-tuned for accents like 'Ç' and 'Õ' in PT-BR */
   letter-spacing: -0.06em;
   text-transform: uppercase;
   color: #fff;
   margin: 0;
-  padding: 0.2em 0; /* Increased from 0.15em */
+  padding: 0.25em 0; /* Extra vertical bleed for accent protection */
   
   /* Surgical gradient */
   background: linear-gradient(to bottom, #fff 0%, #888 100%);

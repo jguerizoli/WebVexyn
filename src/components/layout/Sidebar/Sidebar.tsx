@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Hexagon, Ruler, Circle, Grid3x3, Info } from 'lucide-react';
 import { VexynMark } from '../Icons';
 import styles from './Sidebar.module.css';
@@ -9,12 +10,14 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeSection, scrollTo }) => {
+    const { t } = useTranslation();
+    
     const navItems = [
-        { id: 'hero',        label: 'HOME',        icon: Hexagon  },
-        { id: 'services',    label: 'SERVICES',    icon: Grid3x3  },
-        { id: 'social-proof',label: 'RESULTS',     icon: Info     },
-        { id: 'partners',    label: 'PARTNERS',    icon: Circle   },
-        { id: 'contact-form',label: 'CONTACT',     icon: Ruler    },
+        { id: 'hero',        label: 'HOME',               icon: Hexagon  },
+        { id: 'services',    label: t('nav.services'),    icon: Grid3x3  },
+        { id: 'social-proof',label: t('nav.results'),     icon: Info     },
+        { id: 'partners',    label: t('nav.partners'),    icon: Circle   },
+        { id: 'contact-form',label: t('nav.contact'),     icon: Ruler    },
     ];
     return (
         <div
@@ -52,7 +55,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, scrollTo }) => {
                 })}
             </nav>
         </div>
-    );
+  );
 };
 
 export default Sidebar;

@@ -1,0 +1,44 @@
+.switcher {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  z-index: 1000;
+  background: var(--bg-primary, #000);
+  border: 1px solid var(--border-color, #333);
+  color: var(--text-primary, #fff);
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+}
+
+.switcher:hover {
+  background: var(--text-primary, #fff);
+  color: var(--bg-primary, #000);
+  border-color: var(--text-primary, #fff);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+.label {
+  opacity: 0.5;
+}
+
+.value {
+  font-weight: 700;
+  min-width: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .switcher {
+    top: auto;
+    bottom: 2rem;
+    right: 2rem;
+  }
+}

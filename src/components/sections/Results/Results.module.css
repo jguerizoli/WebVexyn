@@ -12,8 +12,8 @@
   flex-direction: column;
   justify-content: flex-start; /* Aligned to top to match Services/Contact pattern */
   align-items: center;
-  padding: var(--respiro-v-xl) var(--respiro-h);
-  gap: 2rem; /* Reduced to bring button back into view */
+  padding: 2rem var(--respiro-h) var(--respiro-v-xl); /* Standardized top padding */
+  gap: 3rem; /* Equalized gap for architectural balance */
 }
 
 .portalRing {
@@ -67,7 +67,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 250px; /* Precise limit for optimal vertical tension */
+  height: 150px; /* Precise limit for optimal vertical tension */
   overflow: visible;
 }
 
@@ -78,7 +78,7 @@
   flex-direction: column;
   align-items: center;
   z-index: 10;
-  gap: 2rem; /* Slightly increased for better CTA legibility */
+  gap: 3rem; /* Equalized gap for architectural balance */
 }
 
 .ctaReveal {

@@ -1,0 +1,107 @@
+{
+  "nav": {
+    "services": "Serviços",
+    "results": "Resultados",
+    "partners": "Parceiros",
+    "contact": "Contato"
+  },
+  "hero": {
+    "title1": "design + código",
+    "title2": "mude o\nfuturo",
+    "subtitle": "Fazemos ambos. Todos os dias.",
+    "cta_services": "Explorar Serviços",
+    "cta_contact": "Entre em Contato"
+  },
+  "services": {
+    "title1": "O QUE",
+    "title2": "FAZEMOS",
+    "items": {
+      "automations": {
+        "title": "AUTOMAÇÕES",
+        "subtitle": "SISTEMAS INTELIGENTES QUE TRABALHAM POR VOCÊ 24/7",
+        "deliverables": ["PYTHON & AI", "INTEGRAÇÕES API", "FLUXOS DE TRABALHO"],
+        "cta": "AUTOMATIZAR AGORA"
+      },
+      "websites": {
+        "title": "WEBSITES",
+        "subtitle": "EXPERIÊNCIAS DIGITAIS DE ALTA PERFORMANCE",
+        "deliverables": ["NEXT.JS / REACT", "WEBGL / GSAP", "UI/UX DESIGN"],
+        "cta": "INICIAR PROJETO"
+      },
+      "traffic": {
+        "title": "TRÁFEGO",
+        "subtitle": "ESCALANDO RESULTADOS COM PRECISÃO MATEMÁTICA",
+        "deliverables": ["GOOGLE ADS", "META ADS", "ANÁLISE DE DADOS"],
+        "cta": "ESCALAR AGORA"
+      },
+      "social": {
+        "title": "SOCIAL MEDIA",
+        "subtitle": "PRESENÇA DIGITAL QUE CONSTRÓI AUTORIDADE",
+        "deliverables": ["STRATEGY FIRST", "CONTENT DESIGN", "SOCIAL GROWTH"],
+        "cta": "DOMINAR O FEED"
+      },
+      "branding": {
+        "title": "BRANDING",
+        "subtitle": "DESIGN QUE DEFINE O FUTURO DA SUA MARCA",
+        "deliverables": ["BRANDING CORE", "SISTEMAS VISUAIS", "BRAND GUIDELINES"],
+        "cta": "DEFINIR IDENTIDADE"
+      }
+    }
+  },
+  "results": {
+    "title1": "Quer uma",
+    "title2": "prova?",
+    "cta": "Vamos Construir Algo",
+    "reviews": [
+      {
+        "quote": "A Vexyn não entrega apenas código; eles codificam a intenção do negócio.",
+        "author": "Ricardo Menezes",
+        "client": "Fintech Nexus",
+        "metric": "2024 // 01"
+      },
+      {
+        "quote": "Performance que se destaca no mercado. O resultado final é simplesmente arte em movimento.",
+        "author": "Juliana Costa",
+        "client": "TechFlow",
+        "metric": "2024 // 02"
+      },
+      {
+        "quote": "O processo foi transparente e a infraestrutura arquitetônica que a Vexyn construiu é de outro nível.",
+        "author": "Marcos Oliveira",
+        "client": "Bloom Digital",
+        "metric": "2024 // 03"
+      },
+      {
+        "quote": "Abordagem cirúrgica em UI/UX. O nível de detalhe em seus componentes é inigualável na indústria.",
+        "author": "Sarah Jenkins",
+        "client": "Nexus Global",
+        "metric": "2024 // 04"
+      }
+    ]
+  },
+  "contact": {
+    "title": "INICIAR PROJETO",
+    "description": "VAMOS CONSTRUIR A PRÓXIMA GERAÇÃO DA SUA PRESENÇA DIGITAL COM PRECISÃO CIRÚRGICA.",
+    "labels": {
+      "name": "NOME",
+      "email": "EMAIL",
+      "message": "MENSAGEM",
+      "required": "[OBRIGATÓRIO]"
+    },
+    "placeholders": {
+      "name": "SEU NOME COMPLETO",
+      "email": "EMAIL@EXEMPLO.COM",
+      "message": "CONTE-NOS SOBRE SEU PROJETO"
+    },
+    "status": {
+      "sending": "[ENVIANDO...]",
+      "sent": "[MENSAGEM_ENVIADA_COM_SUCESSO]",
+      "send": "ENVIAR MENSAGEM",
+      "errors": {
+        "name": "Nome é obrigatório",
+        "email": "Um e-mail válido é obrigatório",
+        "message": "Mensagem é obrigatória"
+      }
+    }
+  }
+}

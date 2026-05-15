@@ -16,8 +16,8 @@
   --font-mono: 'Geist Mono', monospace;
   
   /* Architectural Respiro (Breathing Room) */
-  --respiro-h: 4vw; /* Horizontal bleed */
-  --respiro-v-xl: 4vw; /* Section gaps */
+  --respiro-h: clamp(1.5rem, 4vw, 4rem); /* Architectural horizontal bleed */
+  --respiro-v-xl: clamp(2rem, 4vw, 4rem); /* Section gaps */
   --respiro-v-lg: 2rem;  /* Major internal gaps */
   --respiro-v-md: 1rem;  /* Content grouping */
   --respiro-v-sm: 0.5rem;  /* Small grouping */
@@ -30,7 +30,7 @@
   --fs-body: 1rem;    /* 12pt */
   --fs-caption: 0.8rem; /* 9.6pt */
   
-  --lh-mega: 0.85;
+  --lh-mega: 0.95; /* Fine-tuned for PT-BR accents (Á, É, Ç) without excessive gaps */
   --lh-body: 1.2;
   --lh-caption: 1.1;
 
@@ -80,6 +80,12 @@ h1, h2, h3 {
   font-family: var(--font-main);
   font-weight: 900;
   line-height: var(--lh-mega);
+  padding-top: 0.15em; /* Top safety margin */
+  padding-bottom: 0.15em; /* Bottom safety margin */
+}
+
+h1 span, h2 span, h3 span {
+  display: inline-block;
 }
 
 * {

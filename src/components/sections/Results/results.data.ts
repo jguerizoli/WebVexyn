@@ -7,19 +7,19 @@ export interface Review {
 
 export const REVIEWS: Review[] = [
   {
-    quote: "A Vexyn não entrega apenas código; eles codificam a intenção do negócio.",
+    quote: "Vexyn doesn't just deliver code; they encode business intent.",
     author: "Ricardo Menezes",
     client: "Fintech Nexus",
     metric: "2024 // 01"
   },
   {
-    quote: "Performance que se destaca no mercado. O resultado final é simplesmente arte em movimento.",
+    quote: "Market-leading performance. The final result is simply art in motion.",
     author: "Juliana Costa",
     client: "TechFlow",
     metric: "2024 // 02"
   },
   {
-    quote: "O processo foi transparente e a infraestrutura arquitetônica que a Vexyn construiu é de outro nível.",
+    quote: "The process was transparent and the architectural infrastructure Vexyn built is on another level.",
     author: "Marcos Oliveira",
     client: "Bloom Digital",
     metric: "2024 // 03"

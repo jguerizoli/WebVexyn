@@ -45,9 +45,40 @@
   transition: all 0.3s ease;
 }
 
-.sidebarNavItem:hover, .isActive {
+.sidebarNavItem:hover {
   color: #fff;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.isActive {
+  color: #fff;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.isActive::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 15%;
+  height: 70%;
+  width: 2px;
+  background: #fff;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+  animation: pulseIndicator 2s infinite ease-in-out;
+}
+
+@keyframes pulseIndicator {
+  0%, 100% { opacity: 1; transform: scaleY(1); }
+  50% { opacity: 0.5; transform: scaleY(0.8); }
+}
+
+.sidebarNavItem svg {
+  transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.isActive svg {
+  transform: scale(1.2);
 }
 
 .sidebarNavLabel {

@@ -2,23 +2,25 @@ import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import { useTranslation } from 'react-i18next';
 import ResultCard from './ResultCard/ResultCard';
 import styles from './Results.module.css';
-import { REVIEWS } from './results.data';
 import { RESULTS_CONFIG } from './results.config';
 import Button from '../../common/Button/Button';
 
 gsap.registerPlugin(ScrollTrigger);
-
 
 interface ResultsProps {
   scrollTo?: (id: string) => void;
 }
 
 const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
+  const { t } = useTranslation();
   const sectionRef = useRef<HTMLElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const ctaRef = useRef<HTMLDivElement>(null);
+
+  const reviews = t('results.reviews', { returnObjects: true }) as any[];
 
   useGSAP(() => {
     const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
@@ -29,6 +31,24 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
     // Initial centering set to avoid jumps
     gsap.set(cards, { xPercent: -50, yPercent: -50 });
 
+    // Phase 1: Context Reveal (Title) - NON-SCRUBBED for immediate impact
+    gsap.fromTo([`.${styles.titleStaged1}`, `.${styles.titleStaged2}`], 
+      { y: animations.title.yOffset, opacity: 0 },
+      { 
+        y: 0, 
+        opacity: 1, 
+        duration: animations.title.duration, 
+        stagger: 0.2,
+        ease: animations.title.ease,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse"
+        }
+      }
+    );
+
+    // Phase 2: Object Spread (ResultCards) - SCRUBBED
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
@@ -39,23 +59,9 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
         scrub: orchestration.scrub,
         invalidateOnRefresh: true,
         anticipatePin: 1,
-        fastScrollEnd: true,
       }
     });
 
-    // Phase 1: Context Reveal (Title)
-    tl.fromTo(`.${styles.titleStaged1}`, 
-      { y: animations.title.yOffset, opacity: 1 },
-      { y: 0, opacity: 1, duration: animations.title.duration, ease: animations.title.ease }
-    );
-
-    tl.fromTo(`.${styles.titleStaged2}`, 
-      { y: animations.title.yOffset, opacity: 1 },
-      { y: 0, opacity: 1, duration: animations.title.duration, ease: animations.title.ease },
-      animations.title.staggerOverlap
-    );
-
-    // Phase 2: Object Spread (ResultCards)
     cards.forEach((card, i) => {
       const isEven = i % 2 === 0;
       const offset = (i - (cards.length - 1) / 2);
@@ -114,15 +120,15 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
         {/* Domain Logic: Results Header */}
         <header className={styles.header}>
           <h2 id="results-title" className={styles.title}>
-            <span className={styles.titleStaged1}>Want some</span>
-            <span className={styles.titleStaged2}>proof?</span>
+            <span className={styles.titleStaged1}>{t('results.title1')}</span>
+            <span className={styles.titleStaged2}>{t('results.title2')}</span>
           </h2>
         </header>
 
         {/* Domain Logic: Results Stack */}
         <div className={styles.resultsContent}>
           <div className={styles.stackContainer}>
-            {REVIEWS.map((review, i) => (
+            {reviews.map((review, i) => (
               <ResultCard 
                 key={i} 
                 review={review}
@@ -138,7 +144,7 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
               variant="primary"
               size="lg"
             >
-              Let's Build Something
+              {t('results.cta')}
             </Button>
           </div>
         </div>

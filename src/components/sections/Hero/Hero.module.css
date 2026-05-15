@@ -37,12 +37,14 @@
   font-size: 1.2em; /* 20% larger than the base for higher hierarchy */
   color: #fff;
   margin-bottom: 0.5rem;
+  white-space: nowrap; /* Prevent "CÓDIGO" from wrapping alone */
 }
 
 .accent {
   display: block;
   color: var(--vx-orange);
   letter-spacing: -0.02em;
+  white-space: pre-line; /* Respect manual line breaks for proportion */
 }
 
 .heroSubtitle {
@@ -59,7 +61,7 @@
 .heroActions {
   display: flex;
   gap: 1.5rem;
-  margin-top: 6rem; /* Further from subtitle for clear CTA */
+  margin-top: 3rem; /* Brought closer to subtitle for better cohesion */
   will-change: transform, opacity;
 }
 
@@ -80,7 +82,7 @@
 }
 
 .heroContent {
-  max-width: 56rem;
+  max-width: 60rem;
 }
 
 .heroSubtitleWrapper {

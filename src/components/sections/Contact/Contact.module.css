@@ -1,7 +1,7 @@
 .section {
   width: 100%;
   min-height: 100vh;
-  padding: var(--respiro-v-xl) var(--respiro-h);
+  padding: 2rem var(--respiro-h) var(--respiro-v-xl);
   background-color: var(--vx-black);
   display: flex;
   flex-direction: column;

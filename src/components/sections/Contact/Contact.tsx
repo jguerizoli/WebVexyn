@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from './Contact.module.css';
 import Button from '../../common/Button/Button';
 
 export default function Contact() {
+  const { t } = useTranslation();
   const [errors, setErrors] = useState<Record<string, boolean>>({});
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -51,9 +53,9 @@ export default function Contact() {
     <section id="contact-form" className={styles.section}>
       <div className={styles.grid}>
         <div className={styles.info}>
-          <h2 className={styles.title}>START A<br />PROJECT</h2>
+          <h2 className={styles.title}>{t('contact.title').split(' ').map((word, i) => i === 1 ? <React.Fragment key={i}><br />{word}</React.Fragment> : word + ' ')}</h2>
           <p className={styles.description}>
-            LET'S BUILD THE NEXT GENERATION OF YOUR DIGITAL PRESENCE WITH SURGICAL PRECISION.
+            {t('contact.description')}
           </p>
           
           <div className={styles.details}>
@@ -75,14 +77,14 @@ export default function Contact() {
             role="status" 
             aria-live="polite"
           >
-            {isSubmitting && 'Sending message...'}
-            {isSent && 'Message sent successfully.'}
+            {isSubmitting && t('contact.status.sending')}
+            {isSent && t('contact.status.sent')}
             {Object.keys(errors).length > 0 && `Form has ${Object.keys(errors).length} errors.`}
           </div>
 
           <div className={`${styles.inputGroup} ${errors.name ? styles.hasError : ''}`}>
             <label htmlFor="name" className={styles.label}>
-              NAME {errors.name && <span className={styles.errorMarker} aria-hidden="true">[REQUIRED]</span>}
+              {t('contact.labels.name')} {errors.name && <span className={styles.errorMarker} aria-hidden="true">{t('contact.labels.required')}</span>}
             </label>
             <input 
               type="text" 
@@ -93,15 +95,15 @@ export default function Contact() {
               aria-describedby={errors.name ? "name-error" : undefined}
               aria-invalid={errors.name ? "true" : "false"}
               className={styles.input} 
-              placeholder="YOUR FULL NAME" 
+              placeholder={t('contact.placeholders.name')} 
               value={formData.name}
               onChange={handleInputChange}
             />
-            {errors.name && <span id="name-error" className={styles.srOnly}>Name is required</span>}
+            {errors.name && <span id="name-error" className={styles.srOnly}>{t('contact.status.errors.name')}</span>}
           </div>
           <div className={`${styles.inputGroup} ${errors.email ? styles.hasError : ''}`}>
             <label htmlFor="email" className={styles.label}>
-              EMAIL {errors.email && <span className={styles.errorMarker} aria-hidden="true">[REQUIRED]</span>}
+              {t('contact.labels.email')} {errors.email && <span className={styles.errorMarker} aria-hidden="true">{t('contact.labels.required')}</span>}
             </label>
             <input 
               type="email" 
@@ -112,15 +114,15 @@ export default function Contact() {
               aria-describedby={errors.email ? "email-error" : undefined}
               aria-invalid={errors.email ? "true" : "false"}
               className={styles.input} 
-              placeholder="EMAIL@EXAMPLE.COM" 
+              placeholder={t('contact.placeholders.email')} 
               value={formData.email}
               onChange={handleInputChange}
             />
-            {errors.email && <span id="email-error" className={styles.srOnly}>A valid email is required</span>}
+            {errors.email && <span id="email-error" className={styles.srOnly}>{t('contact.status.errors.email')}</span>}
           </div>
           <div className={`${styles.inputGroup} ${errors.message ? styles.hasError : ''}`}>
             <label htmlFor="message" className={styles.label}>
-              MESSAGE {errors.message && <span className={styles.errorMarker} aria-hidden="true">[REQUIRED]</span>}
+              {t('contact.labels.message')} {errors.message && <span className={styles.errorMarker} aria-hidden="true">{t('contact.labels.required')}</span>}
             </label>
             <textarea 
               name="message"
@@ -130,12 +132,12 @@ export default function Contact() {
               aria-describedby={errors.message ? "message-error" : undefined}
               aria-invalid={errors.message ? "true" : "false"}
               className={`${styles.input} ${styles.textarea}`} 
-              placeholder="TELL US ABOUT YOUR PROJECT" 
+              placeholder={t('contact.placeholders.message')} 
               rows={4}
               value={formData.message}
               onChange={handleInputChange}
             ></textarea>
-            {errors.message && <span id="message-error" className={styles.srOnly}>Message is required</span>}
+            {errors.message && <span id="message-error" className={styles.srOnly}>{t('contact.status.errors.message')}</span>}
           </div>
           
           <Button 
@@ -146,7 +148,7 @@ export default function Contact() {
             disabled={isSubmitting || isSent}
             aria-disabled={isSubmitting || isSent}
           >
-            {isSubmitting ? '[SENDING...]' : isSent ? '[MESSAGE_SENT_SUCCESSFULLY]' : 'SEND MESSAGE'}
+            {isSubmitting ? t('contact.status.sending') : isSent ? t('contact.status.sent') : t('contact.status.send')}
           </Button>
         </form>
       </div>
