@@ -48,19 +48,19 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
       }
     );
 
-    // Phase 2: Object Spread (ResultCards) - SCRUBBED
+    // Phase 2: Object Spread (ResultCards) - SEQUENTIAL for stepping
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
-        id: "social-proof", // Explicit ID for global snap lookup
+        id: "social-proof",
         start: "top top",
-        end: orchestration.scrollLength,
+        end: `+=${reviews.length * 800}`, // Standardized scroll length for predictable stepping
         pin: true,
         pinSpacing: true,
         scrub: orchestration.scrub,
         invalidateOnRefresh: true,
-        anticipatePin: 1, // High-performance locking
-        snap: 1 / reviews.length, // Snap to each card in the fan
+        anticipatePin: 1,
+        snap: 1 / reviews.length, // Snap to each card milestone
       }
     });
 
@@ -72,7 +72,7 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
       const fanX = offset * orchestration.fanX;
       const fanY = Math.abs(offset) * orchestration.fanY;
 
-      // Animate the card root according to the contract
+      // Animate cards one after another without overlap to match snap points
       tl.fromTo(card, 
         { 
           opacity: 0,
@@ -91,10 +91,9 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
           x: fanX,
           rotation: fanRotation,
           scale: 1,
-          duration: animations.cards.duration,
-          ease: animations.cards.ease
-        },
-        animations.cards.overlap
+          duration: 1,
+          ease: "power2.out"
+        }
       );
     });
 
