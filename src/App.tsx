@@ -113,8 +113,8 @@ function App() {
 
         gsap.to(window, {
           scrollTo: target,
-          duration: 1.1,
-          ease: "power3.inOut",
+          duration: 1.25, // Slightly longer for more "weight"
+          ease: "expo.inOut", // More sophisticated deceleration
           overwrite: true,
           onComplete: () => { 
             isAnimating = false; 
