@@ -1,39 +1,35 @@
-# VEXYN | Digital Couture Gallery
+# Vexyn
 
-Vexyn é uma boutique de **soluções digitais de alto padrão**, focada na criação de experiências web que transcendem o convencional. Combinamos precisão arquitetônica com estética editorial para entregar produtos digitais que são, ao mesmo tempo, ferramentas de performance e peças de design.
+Official repository for Vexyn's corporate web presence. A high-performance, component-based application focused on precision engineering and architectural design.
 
-## 📐 Identidade Visual: Brutalismo Chic
+## Technical Stack
 
-Nossa filosofia de design, o **Brutalismo Chic**, é definida pelo equilíbrio entre a forma bruta industrial e o refinamento da alta costura digital.
+- **Core**: React 19 + TypeScript
+- **Build Tool**: Vite 8
+- **Animation**: GSAP (ScrollTrigger)
+- **3D Engine**: React Three Fiber (Three.js)
+- **Testing**: Vitest + Playwright
+- **Styling**: Vanilla CSS Modules (Standardized via Swiss Grid)
 
--   **Contraste Absoluto**: A tensão visual entre o `Vexyn Void (#050505)` e o `Vexyn Primary (#E5511A)`.
--   **Tipografia Swiss Grid**: Estrutura matemática rigorosa baseada no Estilo Tipográfico Internacional.
--   **Pureza de Forma**: Rejeitamos ruído decorativo. Cada elemento no grid tem um propósito funcional e estético claro.
+## Development
 
-## 🛠️ Stack Tecnológica
+### Prerequisites
+- Node.js (Latest LTS recommended)
+- npm
 
--   **Core**: React + TypeScript
--   **Build Tool**: Vite
--   **Estilização**: Tailwind CSS (estratégico) + CSS puro (cirúrgico)
--   **Animação**: GSAP (ScrollTrigger) & Framer Motion
--   **Qualidade**: Vitest (Unit Testing)
-
-## 📁 Estrutura do Projeto
-
-Consulte o arquivo [PROJECT_INDEX.md](./PROJECT_INDEX.md) para uma visão detalhada da arquitetura de pastas e componentes.
-
-## 🚀 Desenvolvimento
-
+### Installation
 ```bash
-# Instalação de dependências
 npm install
-
-# Iniciar servidor de desenvolvimento
-npm run dev
-
-# Executar testes
-npm test
 ```
 
----
-*Vexyn: Engineering Aesthetic Authority.*
+### Commands
+- `npm run dev`: Start the development server.
+- `npm run build`: Build the production application.
+- `npm test`: Run unit and integration tests.
+- `npm run lint`: Execute ESLint for code quality checks.
+
+## Project Architecture
+
+The project follows a modular architecture based on the International Typographic Style (Swiss Grid). For a detailed breakdown of the file structure and component hierarchy, see [PROJECT_INDEX.md](./PROJECT_INDEX.md).
+
+Design specifications and philosophy are documented in [DESIGN.md](./DESIGN.md).
