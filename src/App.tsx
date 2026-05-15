@@ -20,8 +20,9 @@ function App() {
   const [activeSection, setActiveSection] = useState('hero');
   const isNavigating = useRef(false);
 
-  // Action 1.1: Global ScrollTrigger Refresh Orchestration
+  // Action 1.1: Global ScrollTrigger & Scroll Normalization
   useEffect(() => {
+    ScrollTrigger.normalizeScroll(true);
     const handleRefresh = () => {
       ScrollTrigger.refresh();
     };
@@ -30,6 +31,7 @@ function App() {
     window.addEventListener('resize', handleRefresh);
 
     return () => {
+      ScrollTrigger.normalizeScroll(false);
       window.removeEventListener('load', handleRefresh);
       window.removeEventListener('resize', handleRefresh);
     };
@@ -39,7 +41,7 @@ function App() {
   useGSAP(() => {
     const sections = ['hero', 'services', 'social-proof', 'partners', 'contact-form'];
     const isMobile = window.innerWidth < 1024;
-    if (isMobile) return; // Keep native scroll on mobile for better accessibility
+    if (isMobile) return;
 
     let isAnimating = false;
 
@@ -71,12 +73,10 @@ function App() {
         }
 
         if (main) {
-          // If the main trigger is pinned, the end of the pin is a valid state
           if (main.vars.pin) {
             points.push(Math.round(main.end));
           }
 
-          // If section has internal snap (Services/Results), add those points too
           if (main.vars.snap) {
             const snapVal = typeof main.vars.snap === 'number' ? main.vars.snap : (main.vars.snap as any).snapTo || 0;
             if (snapVal > 0 && snapVal < 1) {
@@ -90,8 +90,7 @@ function App() {
         }
       });
 
-      const uniqueSorted = [...new Set(points)].sort((a, b) => a - b);
-      return uniqueSorted;
+      return [...new Set(points)].sort((a, b) => a - b);
     };
 
     const gotoPoint = (direction: number) => {
@@ -102,7 +101,7 @@ function App() {
       
       let target;
       if (direction > 0) {
-        target = points.find(p => p > currentScroll + 15); // Increased margin for safety
+        target = points.find(p => p > currentScroll + 15);
       } else {
         target = [...points].reverse().find(p => p < currentScroll - 15);
       }
@@ -112,9 +111,9 @@ function App() {
         isNavigating.current = true;
 
         gsap.to(window, {
-          scrollTo: target,
-          duration: 1.25, // Slightly longer for more "weight"
-          ease: "expo.inOut", // More sophisticated deceleration
+          scrollTo: { y: target, autoKill: false },
+          duration: 1.2,
+          ease: "power4.inOut",
           overwrite: true,
           onComplete: () => { 
             isAnimating = false; 

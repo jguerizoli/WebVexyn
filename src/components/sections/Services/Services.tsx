@@ -4,8 +4,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { useTranslation } from 'react-i18next';
 import ServiceCard from './ServiceCard/ServiceCard';
-import { SERVICES_CONFIG } from './services.config';
-
 import styles from './Services.module.css';
 
 gsap.registerPlugin(ScrollTrigger);
