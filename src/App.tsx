@@ -113,18 +113,22 @@ function App() {
         isNavigating.current = true;
         document.body.classList.add('is-navigating');
 
+        const cleanup = () => {
+          isAnimating = false; 
+          isNavigating.current = false;
+          document.body.classList.remove('is-navigating');
+          ScrollTrigger.update();
+        };
+
         gsap.to(window, {
           scrollTo: target,
           duration: 1.15, 
           ease: "expo.out", 
           overwrite: true,
-          onUpdate: () => ScrollTrigger.update(), // Sync internal triggers in real-time
-          onComplete: () => { 
-            isAnimating = false; 
-            isNavigating.current = false;
-            document.body.classList.remove('is-navigating');
-            ScrollTrigger.update();
-          }
+          onUpdate: () => ScrollTrigger.update(),
+          onComplete: cleanup,
+          onInterrupt: cleanup,
+          onOverwrite: cleanup
         });
       }
     };
@@ -140,8 +144,8 @@ function App() {
         // onUp in Observer = user scrolls UP / swipes DOWN
         if (Math.abs(self.deltaY) > 20) gotoPoint(-1);
       },
-      tolerance: 25,
-      preventDefault: true
+      tolerance: 25
+      // preventDefault removed to allow click/touch events to bubble to the UI
     });
 
     // Ensure all 5 sections have a main trigger for anchoring

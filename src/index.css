@@ -90,6 +90,14 @@ body.is-navigating {
   cursor: wait !important;
 }
 
+/* Ensure UI controls remain interactive even during navigation states */
+.sidebar-wrapper, 
+.language-switcher-wrapper,
+[class*="markerSidebar"],
+[class*="switcher-container"] {
+  pointer-events: auto !important;
+}
+
 h1, h2, h3 {
   font-family: var(--font-main);
   font-weight: 900;

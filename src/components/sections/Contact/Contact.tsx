@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from './Contact.module.css';
 import Button from '../../common/Button/Button';
+import gsap from 'gsap';
 
 export default function Contact() {
   const { t } = useTranslation();
@@ -9,6 +10,46 @@ export default function Contact() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isSent, setIsSent] = React.useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const triggerConfetti = () => {
+    if (!buttonRef.current) return;
+    
+    const rect = buttonRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const colors = ['#E5511A', '#ffffff', '#555555', '#222222'];
+    const count = 40;
+
+    for (let i = 0; i < count; i++) {
+      const confetti = document.createElement('div');
+      confetti.style.position = 'fixed';
+      confetti.style.width = `${gsap.utils.random(6, 12)}px`;
+      confetti.style.height = `${gsap.utils.random(6, 12)}px`;
+      confetti.style.backgroundColor = gsap.utils.random(colors);
+      confetti.style.top = `${centerY}px`;
+      confetti.style.left = `${centerX}px`;
+      confetti.style.zIndex = '9999';
+      confetti.style.pointerEvents = 'none';
+      document.body.appendChild(confetti);
+
+      const angle = gsap.utils.random(0, Math.PI * 2);
+      const velocity = gsap.utils.random(100, 250);
+      const x = Math.cos(angle) * velocity;
+      const y = Math.sin(angle) * velocity;
+
+      gsap.to(confetti, {
+        x: x,
+        y: y - 100, // Upwards arc
+        rotation: gsap.utils.random(0, 720),
+        scale: 0,
+        opacity: 0,
+        duration: gsap.utils.random(1, 2),
+        ease: "power2.out",
+        onComplete: () => confetti.remove()
+      });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,14 +70,13 @@ export default function Contact() {
       // Simulate API latency
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      console.log('Form submitted successfully');
       setIsSubmitting(false);
       setIsSent(true);
+      triggerConfetti();
       
       // Clear form after success
       setFormData({ name: '', email: '', message: '' });
       
-      // Optional: reset success state after 5 seconds
       setTimeout(() => setIsSent(false), 5000);
     }
   };
@@ -141,6 +181,7 @@ export default function Contact() {
           </div>
           
           <Button 
+            ref={buttonRef}
             variant="primary" 
             size="lg" 
             type="submit" 
