@@ -31,39 +31,23 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
     // Initial centering set to avoid jumps
     gsap.set(cards, { xPercent: -50, yPercent: -50 });
 
-    // Phase 1: Context Reveal (Title) - NON-SCRUBBED for immediate impact
-    gsap.fromTo([`.${styles.titleStaged1}`, `.${styles.titleStaged2}`], 
-      { y: animations.title.yOffset, opacity: 0 },
-      { 
-        y: 0, 
-        opacity: 1, 
-        duration: animations.title.duration, 
-        stagger: 0.2,
-        ease: animations.title.ease,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          toggleActions: "play none none reverse"
-        }
-      }
-    );
-
-    // Phase 2: Object Spread (ResultCards) - SEQUENTIAL for stepping
+    // Unified Entrance: Title Reveal + Full Fan-out (Automatic)
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
-        id: "social-proof",
-        start: "top top",
-        end: `+=${reviews.length * 800}`, // Standardized scroll length for predictable stepping
-        pin: true,
-        pinSpacing: true,
-        scrub: orchestration.scrub,
-        invalidateOnRefresh: true,
-        anticipatePin: 1,
-        snap: 1 / reviews.length, // Snap to each card milestone
+        id: "social-proof", // Anchor for snapping
+        start: "top 80%",
+        toggleActions: "play none none reverse"
       }
     });
 
+    // 1. Reveal Title
+    tl.fromTo([`.${styles.titleStaged1}`, `.${styles.titleStaged2}`], 
+      { y: animations.title.yOffset, opacity: 0 },
+      { y: 0, opacity: 1, duration: animations.title.duration, stagger: 0.1, ease: animations.title.ease }
+    );
+
+    // 2. Fan-out all cards at once
     cards.forEach((card, i) => {
       const isEven = i % 2 === 0;
       const offset = (i - (cards.length - 1) / 2);
@@ -72,37 +56,37 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
       const fanX = offset * orchestration.fanX;
       const fanY = Math.abs(offset) * orchestration.fanY;
 
-      // Animate cards one after another without overlap to match snap points
       tl.fromTo(card, 
         { 
           opacity: 0,
+          scale: 0.8,
           xPercent: -50,
           yPercent: -50,
-          y: fanY + animations.cards.yOffset,
+          y: fanY + 100,
           x: fanX * 0.5,
-          rotation: isEven ? -animations.cards.initialRotation : animations.cards.initialRotation,
-          scale: animations.cards.scale
+          rotation: isEven ? -10 : 10
         },
         { 
           opacity: 1,
+          scale: 1,
           xPercent: -50,
           yPercent: -50,
           y: fanY,
           x: fanX,
           rotation: fanRotation,
-          scale: 1,
-          duration: 1,
-          ease: "power2.out"
-        }
+          duration: 1.2,
+          ease: "expo.out"
+        },
+        "-=0.8" // Heavy overlap for simultaneous fan-out effect
       );
     });
 
-    // Phase 3: Conversion Reveal (CTA)
+    // 3. Reveal CTA
     if (ctaRef.current) {
       tl.fromTo(ctaRef.current,
-        { y: animations.cta.yOffset, opacity: 0 },
-        { y: 0, opacity: 1, duration: animations.cta.duration, ease: animations.cta.ease },
-        animations.cta.overlap
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" },
+        "-=0.6"
       );
     }
 

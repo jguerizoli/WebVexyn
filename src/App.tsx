@@ -73,7 +73,6 @@ function App() {
       });
 
       const uniqueSorted = [...new Set(points)].sort((a, b) => a - b);
-      console.log("[ScrollManager] Valid Snap Points:", uniqueSorted);
       return uniqueSorted;
     };
 
@@ -90,8 +89,6 @@ function App() {
         target = [...points].reverse().find(p => p < currentScroll - 15);
       }
 
-      console.log(`[ScrollManager] Intent: ${direction > 0 ? 'DOWN' : 'UP'} | Current: ${currentScroll} | Target: ${target}`);
-
       if (target !== undefined) {
         isAnimating = true;
         isNavigating.current = true;
@@ -107,8 +104,6 @@ function App() {
             ScrollTrigger.update();
           }
         });
-      } else {
-        console.warn("[ScrollManager] No valid target found in direction:", direction);
       }
     };
 
