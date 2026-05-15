@@ -80,18 +80,25 @@
   /* Surgical gradient */
   background: linear-gradient(to bottom, #fff 0%, #888 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   display: block;
   transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   overflow-wrap: break-word;
   word-wrap: break-word;
-  width: 100%;
+  word-break: break-word;
+  hyphens: auto;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
 }
 
 .card:hover .title {
   transform: translateX(10px);
   background: linear-gradient(to right, #fff 0%, var(--vx-orange) 200%);
   -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
