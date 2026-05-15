@@ -19,7 +19,7 @@ const Hero: React.FC<HeroProps> = ({ scrollTo }) => {
   const container = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    const { entrance, parallax } = HERO_CONFIG;
+    const { entrance } = HERO_CONFIG;
     const tl = gsap.timeline();
 
     // Entrance Sequence: High-impact cuts
@@ -58,27 +58,17 @@ const Hero: React.FC<HeroProps> = ({ scrollTo }) => {
       pin: true,
       anticipatePin: 1,
       snap: 1, // Full-page snap for Hero
-      onUpdate: (self) => {
+      onUpdate: () => {
         // Optional: Can tie entrance progress here if needed
       }
     });
 
-    gsap.to(`.${styles.heroSymbolWrapper}`, {
-      y: parallax.symbolY,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: container.current,
-        start: parallax.start,
-        end: parallax.end,
-        scrub: parallax.scrub
-      }
-    });
 
     return () => {
       tl.kill();
       heroST.kill();
     };
-  }, { scope: container });
+  }, { scope: container, dependencies: [] });
 
   return (
     <section id="hero" ref={container} className={styles.heroSection}>

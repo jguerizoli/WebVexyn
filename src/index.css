@@ -47,6 +47,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scrollbar-gutter: stable;
+
+  font-size: 90%;
 }
 
 @keyframes technical-flicker {
@@ -128,7 +130,7 @@ h1 span, h2 span, h3 span {
 
 .content {
   flex: 1;
-  padding-left: 72px;
+  padding-left: 4.5rem;
   min-width: 0; /* Prevents flex children from pushing width */
   background: var(--vx-black);
   position: relative;
@@ -163,7 +165,7 @@ section {
 @media (max-width: 968px) {
   .content {
     padding-left: 0;
-    padding-bottom: 80px;
+    padding-bottom: 5rem;
   }
 }
 

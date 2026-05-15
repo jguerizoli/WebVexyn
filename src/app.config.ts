@@ -4,4 +4,7 @@ export const APP_CONFIG = {
     ease: 'power3.inOut',
     autoKill: false,
   },
+  whatsapp: {
+    number: '5511999999999',
+  },
 };

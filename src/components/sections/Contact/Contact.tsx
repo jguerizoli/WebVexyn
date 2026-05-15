@@ -101,7 +101,7 @@ export default function Contact() {
           <div className={styles.details}>
             <div className={styles.detailItem}>
               <span className={styles.detailLabel}>LOCATION</span>
-              <span className={styles.detailValue}>SAO PAULO / BR</span>
+              <span className={styles.detailValue}>BRASILIA / BR</span>
             </div>
             <div className={styles.detailItem}>
               <span className={styles.detailLabel}>EMAIL</span>

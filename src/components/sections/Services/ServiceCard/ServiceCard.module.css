@@ -11,7 +11,7 @@
   flex-direction: column;
   justify-content: flex-start;
   overflow: hidden; /* Necessary for scanner sweep */
-  transition: var(--transition-chic);
+  transition: none; /* Shutter Cut: Instant feedback */
 }
 
 .card:hover {
@@ -19,7 +19,7 @@
   background: #080808;
 }
 
-/* The Scanner Sweep Effect */
+/* The Scanner Sweep Effect (Standardized) */
 .card::before {
   content: '';
   position: absolute;
@@ -30,7 +30,7 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(229, 81, 26, 0.05) 50%,
+    rgba(255, 255, 255, 0.2) 50%,
     transparent 100%
   );
   z-index: 1;
@@ -38,7 +38,7 @@
 }
 
 .card:hover::before {
-  animation: scanner-sweep 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  animation: scanner-sweep 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes scanner-sweep {
@@ -83,7 +83,7 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   display: block;
-  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: none; /* Shutter Cut */
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;

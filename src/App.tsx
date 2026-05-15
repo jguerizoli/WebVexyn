@@ -1,11 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from './components/layout/Sidebar';
 import Hero from './components/sections/Hero';
 import Services from './components/sections/Services/Services';
 import Results from './components/sections/Results';
 import Partners from './components/sections/Partners/Partners';
 import Contact from './components/sections/Contact/Contact';
-import LanguageSwitcher from './components/common/LanguageSwitcher/LanguageSwitcher';
+import Footer from './components/layout/Footer/Footer';
+import WhatsAppButton from './components/common/WhatsAppButton/WhatsAppButton';
+import Error404 from './components/sections/Error404/Error404';
 import './App.css';
 import gsap from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
@@ -19,6 +22,9 @@ gsap.registerPlugin(ScrollToPlugin, ScrollTrigger, Observer);
 function App() {
   const [activeSection, setActiveSection] = useState('hero');
   const isNavigating = useRef(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isHome = location.pathname === '/';
 
   // Action 1.1: Global ScrollTrigger Refresh Orchestration
   useEffect(() => {
@@ -35,15 +41,16 @@ function App() {
     };
   }, []);
 
-  // Action 1.3: Scroll Hijacking & State Orchestration
+  // Action 1.3: Scroll Hijacking & State Orchestration (Only on Home)
   useGSAP(() => {
-    const sections = ['hero', 'services', 'social-proof', 'partners', 'contact-form'];
+    if (!isHome) return;
+
+    const sections = ['hero', 'services', 'social-proof', 'partners', 'contact-form', 'site-footer'];
     const isMobile = window.innerWidth < 1024;
-    if (isMobile) return; // Keep native scroll on mobile for better accessibility
+    if (isMobile) return;
 
     let isAnimating = false;
 
-    // Create Master Anchor Triggers for each section (top top)
     sections.forEach(id => {
       const anchorId = `anchor-${id}`;
       if (!ScrollTrigger.getById(anchorId)) {
@@ -56,27 +63,16 @@ function App() {
       }
     });
 
-    // Refresh to ensure offsets are perfect
     setTimeout(() => { ScrollTrigger.refresh(); }, 200);
 
     const getSnapPoints = () => {
       const points: number[] = [];
-
       sections.forEach(id => {
         const anchor = ScrollTrigger.getById(`anchor-${id}`);
         const main = ScrollTrigger.getById(id);
-
-        if (anchor) {
-          points.push(Math.round(anchor.start));
-        }
-
+        if (anchor) points.push(Math.round(anchor.start));
         if (main) {
-          // If the main trigger is pinned, the end of the pin is a valid state
-          if (main.vars.pin) {
-            points.push(Math.round(main.end));
-          }
-
-          // If section has internal snap (Services/Results), add those points too
+          if (main.vars.pin) points.push(Math.round(main.end));
           if (main.vars.snap) {
             const snapVal = typeof main.vars.snap === 'number' ? main.vars.snap : (main.vars.snap as any).snapTo || 0;
             if (snapVal > 0 && snapVal < 1) {
@@ -89,37 +85,29 @@ function App() {
           }
         }
       });
-
-      const uniqueSorted = [...new Set(points)].sort((a, b) => a - b);
-      return uniqueSorted;
+      return [...new Set(points)].sort((a, b) => a - b);
     };
 
     const gotoPoint = (direction: number) => {
       if (isAnimating || isNavigating.current) return;
-
       const points = getSnapPoints();
       const currentScroll = Math.round(window.scrollY);
-      
       let target;
       if (direction > 0) {
-        // Look for next point with a slightly larger margin to avoid micro-jitter
         target = points.find(p => p > currentScroll + 20); 
       } else {
         target = [...points].reverse().find(p => p < currentScroll - 20);
       }
-
       if (target !== undefined) {
         isAnimating = true;
         isNavigating.current = true;
         document.body.classList.add('is-navigating');
-
         const cleanup = () => {
           isAnimating = false; 
           isNavigating.current = false;
           document.body.classList.remove('is-navigating');
           ScrollTrigger.update();
         };
-
         gsap.to(window, {
           scrollTo: target,
           duration: 1.15, 
@@ -135,20 +123,15 @@ function App() {
 
     const obs = Observer.create({
       type: "wheel,touch,pointer",
-      // Removed wheelSpeed: -1 to keep natural direction
       onDown: (self) => {
-        // onDown in Observer = user scrolls DOWN / swipes UP
         if (Math.abs(self.deltaY) > 20) gotoPoint(1);
       },
       onUp: (self) => {
-        // onUp in Observer = user scrolls UP / swipes DOWN
         if (Math.abs(self.deltaY) > 20) gotoPoint(-1);
       },
       tolerance: 25
-      // preventDefault removed to allow click/touch events to bubble to the UI
     });
 
-    // Ensure all 5 sections have a main trigger for anchoring
     sections.forEach(id => {
       if (!ScrollTrigger.getById(id)) {
         ScrollTrigger.create({
@@ -157,7 +140,6 @@ function App() {
           start: "top top"
         });
       }
-
       ScrollTrigger.create({
         trigger: `#${id}`,
         start: "top 40%",
@@ -176,19 +158,19 @@ function App() {
       obs.kill();
       document.body.classList.remove('is-desktop-hijack');
     };
-  }, []);
+  }, [isHome]);
 
   const scrollTo = (id: string) => {
-    // Action 1.4: Pre-navigation refresh to ensure pinned offsets are accurate
-    ScrollTrigger.refresh();
+    if (!isHome) {
+      navigate('/', { state: { scrollTo: id } });
+      return;
+    }
 
+    ScrollTrigger.refresh();
     const element = document.getElementById(id);
     if (!element) return;
 
     const { scrolling } = APP_CONFIG;
-
-    // Action 1.2 Refined: Robust cleanup to prevent stuck 'is-navigating' states
-    // and ensure ScrollTrigger recalibrates after each navigation
     const cleanup = () => {
       isNavigating.current = false;
       document.body.classList.remove('is-navigating');
@@ -202,32 +184,53 @@ function App() {
         autoKill: scrolling.autoKill
       },
       ease: scrolling.ease,
-      overwrite: true, // Kill existing tweens to avoid state conflicts
+      overwrite: true,
       onStart: () => {
         isNavigating.current = true;
         document.body.classList.add('is-navigating');
-        setActiveSection(id); // Immediate Sidebar feedback
+        setActiveSection(id);
       },
-      onUpdate: () => {
-        // Keep ScrollTriggers in sync during high-speed travel
-        ScrollTrigger.update();
-      },
+      onUpdate: () => ScrollTrigger.update(),
       onComplete: cleanup,
       onInterrupt: cleanup,
       onOverwrite: cleanup
     });
   };
 
+  // Handle cross-page scrolling
+  useEffect(() => {
+    if (isHome && location.state?.scrollTo) {
+      const targetId = location.state.scrollTo;
+      // Small delay to ensure DOM is ready
+      setTimeout(() => scrollTo(targetId), 100);
+      // Clear state so it doesn't scroll again on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [isHome, location.state]);
+
   return (
     <div className="app-container">
-      <LanguageSwitcher />
+      <WhatsAppButton />
       <Sidebar activeSection={activeSection} scrollTo={scrollTo} />
       <main className="content">
-        <Hero scrollTo={scrollTo} />
-        <Services scrollTo={scrollTo} />
-        <Results scrollTo={scrollTo} />
-        <Partners />
-        <Contact />
+        <Routes>
+          <Route path="/" element={
+            <>
+              <Hero scrollTo={scrollTo} />
+              <Services scrollTo={scrollTo} />
+              <Results scrollTo={scrollTo} />
+              <Partners />
+              <Contact />
+              <Footer id="site-footer" scrollTo={scrollTo} />
+            </>
+          } />
+          <Route path="*" element={
+            <>
+              <Error404 />
+              <Footer id="site-footer" scrollTo={scrollTo} />
+            </>
+          } />
+        </Routes>
       </main>
     </div>
   );
