@@ -88,25 +88,25 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
 
     // 1. Transition Out Previous
     tl.to(current, {
-      yPercent: -10,
+      yPercent: -5,
       opacity: 0,
-      duration: 0.5,
-      ease: "power2.in",
+      duration: 0.6,
+      ease: "power2.inOut",
       pointerEvents: "none",
       zIndex: 10
     });
 
     // 2. Transition In Next
     tl.fromTo(next,
-      { yPercent: 10, opacity: 0, zIndex: 50 },
+      { yPercent: 5, opacity: 0, zIndex: 50 },
       { 
         yPercent: 0, 
         opacity: 1, 
-        duration: 0.8, 
-        ease: "power3.out",
+        duration: 0.6, 
+        ease: "power2.inOut",
         pointerEvents: "auto"
       },
-      "-=0.2"
+      "-=0.4" // Heavy overlap for crossfade effect
     );
 
     // 3. Force Content Reveal (fixes the "incomplete" bug)
