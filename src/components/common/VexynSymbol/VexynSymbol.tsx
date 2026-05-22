@@ -4,7 +4,6 @@ import { useGSAP } from '@gsap/react';
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
 import styles from './VexynSymbol.module.css';
 
-// Register GSAP plugins
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(DrawSVGPlugin);
 }
@@ -28,14 +27,12 @@ const VexynSymbol: React.FC<VexynSymbolProps> = ({
   useGSAP(() => {
     if (!pathRef.current) return;
 
-    // The "Light Pulse" Timeline
     const pulseTl = gsap.timeline({
       repeat: -1,
       repeatDelay: 1,
       defaults: { ease: 'none' }
     });
 
-    // We animate a segment of the path to create a "trailing light" effect
     pulseTl.fromTo(pathRef.current, 
       { drawSVG: '0% 0%' },
       { 
@@ -55,7 +52,6 @@ const VexynSymbol: React.FC<VexynSymbolProps> = ({
       ease: 'power2.out'
     });
 
-    // Technical Flicker Logic
     if (flicker) {
       gsap.to(container.current, {
         opacity: 0.4 * glowIntensity,

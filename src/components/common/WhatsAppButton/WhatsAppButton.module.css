@@ -1,23 +1,61 @@
-.whatsappContainer {
+.topRightActions {
   position: fixed;
   top: 2rem;
   right: 2rem;
   z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.socialButtons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.socialBtn {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #050505;
+  color: var(--vx-light-grey, #a0a0a0);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  box-shadow: 4px 4px 0px 0px #000;
+  box-sizing: border-box;
+}
+
+.socialBtn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px #000;
+}
+
+.whatsappContainer {
+  position: relative;
   text-decoration: none;
   background: var(--vx-orange, #E5511A);
   border: none;
   color: #131313;
-  padding: 0.5rem 1rem;
+  padding: 0 1rem;
+  height: 2.25rem;
   display: flex;
   align-items: center;
   gap: 0.75rem;
   font-family: var(--font-mono, monospace);
   font-size: 0.75rem;
   letter-spacing: 0.1em;
-  transition: none; /* Shutter Cut */
+  transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   text-transform: uppercase;
   overflow: hidden;
   box-shadow: 4px 4px 0px 0px #000;
+  cursor: pointer;
+  box-sizing: border-box;
 }
 
 .whatsappContainer:hover {
@@ -61,8 +99,7 @@
 }
 
 @media (max-width: 968px) {
-  .whatsappContainer {
-    top: 2rem; /* Keep it top right or maybe bottom left? */
-    right: 1.5rem;
+  .topRightActions {
+    display: none !important;
   }
 }

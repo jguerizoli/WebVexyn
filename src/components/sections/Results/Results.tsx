@@ -27,69 +27,123 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
     if (!cards.length) return;
     
     const { orchestration, animations } = RESULTS_CONFIG;
+    const mm = gsap.matchMedia();
 
-    // Initial centering set to avoid jumps
-    gsap.set(cards, { xPercent: -50, yPercent: -50 });
+    mm.add("(min-width: 1024px)", () => {
+      gsap.set(cards, { xPercent: -50, yPercent: -50, x: 0, y: 0, rotation: 0, scale: 1, opacity: 0 });
 
-    // Unified Entrance: Title Reveal + Full Fan-out (Automatic)
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        id: "social-proof-reveal", // Renamed to avoid snap interference
-        start: "top 80%",
-        toggleActions: "play none none reverse"
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          id: "social-proof-reveal",
+          start: "top 80%",
+          toggleActions: "play none none reverse"
+        }
+      });
+
+      tl.fromTo([`.${styles.titleStaged1}`, `.${styles.titleStaged2}`], 
+        { y: animations.title.yOffset, opacity: 0 },
+        { y: 0, opacity: 1, duration: animations.title.duration, stagger: 0.1, ease: animations.title.ease }
+      );
+
+      cards.forEach((card, i) => {
+        const isEven = i % 2 === 0;
+        const offset = (i - (cards.length - 1) / 2);
+        
+        const fanRotation = offset * orchestration.fanRotation;
+        const fanX = offset * orchestration.fanX;
+        const fanY = Math.abs(offset) * orchestration.fanY;
+
+        tl.fromTo(card, 
+          { 
+            opacity: 0,
+            scale: 0.8,
+            xPercent: -50,
+            yPercent: -50,
+            y: fanY + 100,
+            x: fanX * 0.5,
+            rotation: isEven ? -10 : 10
+          },
+          { 
+            opacity: 1,
+            scale: 1,
+            xPercent: -50,
+            yPercent: -50,
+            y: fanY,
+            x: fanX,
+            rotation: fanRotation,
+            duration: 1.2,
+            ease: "expo.out"
+          },
+          "-=0.8"
+        );
+      });
+
+      if (ctaRef.current) {
+        tl.fromTo(ctaRef.current,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" },
+          "-=0.6"
+        );
       }
     });
 
-    // 1. Reveal Title
-    tl.fromTo([`.${styles.titleStaged1}`, `.${styles.titleStaged2}`], 
-      { y: animations.title.yOffset, opacity: 0 },
-      { y: 0, opacity: 1, duration: animations.title.duration, stagger: 0.1, ease: animations.title.ease }
-    );
+    mm.add("(max-width: 1023px)", () => {
+      gsap.set(cards, { xPercent: 0, yPercent: 0, x: 0, y: 0, rotation: 0, scale: 1, opacity: 0 });
 
-    // 2. Fan-out all cards at once
-    cards.forEach((card, i) => {
-      const isEven = i % 2 === 0;
-      const offset = (i - (cards.length - 1) / 2);
-      
-      const fanRotation = offset * orchestration.fanRotation;
-      const fanX = offset * orchestration.fanX;
-      const fanY = Math.abs(offset) * orchestration.fanY;
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          id: "social-proof-reveal-mobile",
+          start: "top 85%",
+          toggleActions: "play none none reverse"
+        }
+      });
 
-      tl.fromTo(card, 
-        { 
-          opacity: 0,
-          scale: 0.8,
-          xPercent: -50,
-          yPercent: -50,
-          y: fanY + 100,
-          x: fanX * 0.5,
-          rotation: isEven ? -10 : 10
-        },
-        { 
-          opacity: 1,
-          scale: 1,
-          xPercent: -50,
-          yPercent: -50,
-          y: fanY,
-          x: fanX,
-          rotation: fanRotation,
-          duration: 1.2,
-          ease: "expo.out"
-        },
-        "-=0.8" // Heavy overlap for simultaneous fan-out effect
+      tl.fromTo([`.${styles.titleStaged1}`, `.${styles.titleStaged2}`], 
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power2.out" }
       );
+
+      cards.forEach((card, i) => {
+        if (i >= 2) return;
+        gsap.fromTo(card,
+          { y: 50, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 90%",
+              toggleActions: "play none none reverse"
+            }
+          }
+        );
+      });
+
+      if (ctaRef.current) {
+        gsap.fromTo(ctaRef.current,
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: ctaRef.current,
+              start: "top 95%",
+              toggleActions: "play none none reverse"
+            }
+          }
+        );
+      }
     });
 
-    // 3. Reveal CTA
-    if (ctaRef.current) {
-      tl.fromTo(ctaRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" },
-        "-=0.6"
-      );
-    }
-
+    return () => {
+      mm.revert();
+    };
   }, { scope: sectionRef });
 
   return (
@@ -102,7 +156,6 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
       <div className={styles.wrapper}>
         <div className={styles.portalRing} />
         
-        {/* Domain Logic: Results Header */}
         <header className={styles.header}>
           <h2 id="results-title" className={styles.title}>
             <span className={styles.titleStaged1}>{t('results.title1')}</span>
@@ -110,7 +163,6 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
           </h2>
         </header>
 
-        {/* Domain Logic: Results Stack */}
         <div className={styles.resultsContent}>
           <div className={styles.stackContainer}>
             {reviews.map((review, i) => (
@@ -122,7 +174,6 @@ const Results: React.FC<ResultsProps> = ({ scrollTo }) => {
             ))}
           </div>
 
-          {/* Domain Logic: Conversion Hook */}
           <div ref={ctaRef} className={styles.ctaReveal}>
             <Button 
               onClick={() => scrollTo?.('contact-form')}

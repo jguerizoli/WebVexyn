@@ -1,10 +1,59 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Hexagon, Ruler, Circle, Grid3x3, Info } from 'lucide-react';
+import { Hexagon, Ruler, Circle, Grid3x3, Info, MessageCircle } from 'lucide-react';
 import { VexynMark } from '../Icons';
 import styles from './Sidebar.module.css';
 
+const InstagramIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth={props.strokeWidth || 1.5}
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    {...props}
+  >
+    <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+  </svg>
+);
+
+const LinkedInIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth={props.strokeWidth || 1.5}
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    {...props}
+  >
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+    <rect width="4" height="12" x="2" y="9"/>
+    <circle cx="4" cy="4" r="2"/>
+  </svg>
+);
+
+const TwitterXIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth={props.strokeWidth || 1.5}
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    {...props}
+  >
+    <path d="M4 4l11.733 16h4.267l-11.733 -16z"/>
+    <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/>
+  </svg>
+);
+
 import LanguageSwitcher from '../../common/LanguageSwitcher/LanguageSwitcher';
+import { APP_CONFIG } from '../../../app.config';
+import WhatsAppModal from '../../common/WhatsAppModal/WhatsAppModal';
 
 interface SidebarProps {
     activeSection: string;
@@ -13,7 +62,14 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ activeSection, scrollTo }) => {
     const { t } = useTranslation();
+    const [isModalOpen, setIsModalOpen] = useState(false);
     
+    const getEffectiveActiveId = (id: string, isMobileNav: boolean) => {
+        if (id === 'site-footer') return 'contact-form';
+        if (id === 'partners' && isMobileNav) return 'social-proof';
+        return id;
+    };
+
     const navItems = [
         { id: 'hero',        label: 'HOME',               icon: Hexagon  },
         { id: 'services',    label: t('nav.services'),    icon: Grid3x3  },
@@ -21,48 +77,146 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSection, scrollTo }) => {
         { id: 'partners',    label: t('nav.partners'),    icon: Circle   },
         { id: 'contact-form',label: t('nav.contact'),     icon: Ruler    },
     ];
+
+    const mobileNavItems = [
+        { id: 'hero',         label: 'HOME',               icon: Hexagon,       type: 'nav' as const },
+        { id: 'services',     label: t('nav.services'),    icon: Grid3x3,       type: 'nav' as const },
+        { id: 'whatsapp',     label: 'WhatsApp',           icon: MessageCircle, type: 'whatsapp' as const },
+        { id: 'social-proof', label: t('nav.results'),     icon: Info,          type: 'nav' as const },
+        { id: 'contact-form', label: t('nav.contact'),     icon: Ruler,         type: 'nav' as const },
+    ];
+
+    const whatsappUrl = `https://wa.me/${APP_CONFIG.whatsapp.number}`;
+
+    const handleConfirmWhatsApp = () => {
+        setIsModalOpen(false);
+        window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    };
+
     return (
-        <div
-            className={styles.markerSidebar}
-            style={{ boxShadow: '4px 0 32px 8px rgba(0,0,0,0.85)' }}
-        >
-            <div className={styles.topSection}>
-                {/* Brand mark */}
-                <div className={styles.sidebarLogo}>
-                    <button
-                        onClick={() => scrollTo('hero')}
-                        className={styles.sidebarLogoBtn}
+        <>
+            {/* Mobile Top Header */}
+            <div className={styles.mobileHeader}>
+                <button
+                    onClick={() => scrollTo('hero')}
+                    className={styles.mobileLogoBtn}
+                    aria-label="Home"
+                >
+                    <VexynMark className="vx-mark" />
+                </button>
+                <div className={styles.mobileHeaderRight}>
+                    <a
+                        href="https://x.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.socialMobileBtn}
+                        aria-label="Twitter / X"
                     >
-                        <VexynMark className="vx-mark" />
-                    </button>
+                        <TwitterXIcon width={18} height={18} strokeWidth={1.5} />
+                    </a>
+                    <a
+                        href="https://linkedin.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.socialMobileBtn}
+                        aria-label="LinkedIn"
+                    >
+                        <LinkedInIcon width={18} height={18} strokeWidth={1.5} />
+                    </a>
+                    <a
+                        href="https://www.instagram.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.socialMobileBtn}
+                        aria-label="Instagram"
+                    >
+                        <InstagramIcon width={18} height={18} strokeWidth={1.5} />
+                    </a>
+                    <LanguageSwitcher />
+                </div>
+            </div>
+
+            <div
+                className={styles.markerSidebar}
+                style={{ boxShadow: '4px 0 32px 8px rgba(0,0,0,0.85)' }}
+            >
+                <div className={styles.topSection}>
+                    {/* Brand mark (Desktop Only) */}
+                    <div className={styles.sidebarLogo}>
+                        <button
+                            onClick={() => scrollTo('hero')}
+                            className={styles.sidebarLogoBtn}
+                        >
+                            <VexynMark className="vx-mark" />
+                        </button>
+                    </div>
+
+
+                    {/* Desktop Nav items */}
+                    <nav className={`${styles.sidebarNav} ${styles.desktopNav}`}>
+                        {navItems.map((item) => {
+                            const Icon = item.icon;
+                            const isActive = getEffectiveActiveId(activeSection, false) === item.id;
+
+                            return (
+                                <button
+                                    key={item.id}
+                                    onClick={() => scrollTo(item.id)}
+                                    className={`${styles.sidebarNavItem}${isActive ? ` ${styles.isActive}` : ''}`}
+                                    title={item.label}
+                                >
+                                    <Icon size={20} strokeWidth={1.5} />
+                                    <span className={styles.sidebarNavLabel}>{item.label}</span>
+                                </button>
+                            );
+                        })}
+                    </nav>
+
+                    {/* Mobile Nav items */}
+                    <nav className={`${styles.sidebarNav} ${styles.mobileNav}`}>
+                        {mobileNavItems.map((item) => {
+                            const Icon = item.icon;
+
+                            if (item.type === 'whatsapp') {
+                                return (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => setIsModalOpen(true)}
+                                        className={styles.whatsappNavItem}
+                                        title={item.label}
+                                    >
+                                        <Icon size={20} strokeWidth={1.5} />
+                                    </button>
+                                );
+                            }
+
+                            const isActive = getEffectiveActiveId(activeSection, true) === item.id;
+
+                            return (
+                                <button
+                                    key={item.id}
+                                    onClick={() => scrollTo(item.id)}
+                                    className={`${styles.sidebarNavItem}${isActive ? ` ${styles.isActive}` : ''}`}
+                                    title={item.label}
+                                >
+                                    <Icon size={20} strokeWidth={1.5} />
+                                </button>
+                            );
+                        })}
+                    </nav>
                 </div>
 
-
-                {/* Nav items */}
-                <nav className={styles.sidebarNav}>
-                    {navItems.map((item) => {
-                        const Icon = item.icon;
-                        const isActive = activeSection === item.id;
-
-                        return (
-                            <button
-                                key={item.id}
-                                onClick={() => scrollTo(item.id)}
-                                className={`${styles.sidebarNavItem}${isActive ? ` ${styles.isActive}` : ''}`}
-                                title={item.label}
-                            >
-                                <Icon size={20} strokeWidth={1.5} />
-                                <span className={styles.sidebarNavLabel}>{item.label}</span>
-                            </button>
-                        );
-                    })}
-                </nav>
+                {/* Language Switcher (Desktop Only) */}
+                <div className={styles.bottomSection}>
+                    <LanguageSwitcher />
+                </div>
             </div>
-
-            <div className={styles.bottomSection}>
-                <LanguageSwitcher />
-            </div>
-        </div>
+            <WhatsAppModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onConfirm={handleConfirmWhatsApp}
+            />
+        </>
   );
 };
 

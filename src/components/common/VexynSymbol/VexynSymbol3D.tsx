@@ -92,7 +92,7 @@ const VexynMark3D = ({ isInView }: { isInView: boolean }) => {
       if (!path) return [];
       
       const length = path.getLength();
-      const points = path.getSpacedPoints(Math.max(200, Math.floor(length * 5)));
+      const points = path.getSpacedPoints(Math.max(120, Math.floor(length * 2)));
       const geometry = new THREE.BufferGeometry().setFromPoints(points);
       
       const distAttr = new Float32Array(points.length);
@@ -149,7 +149,15 @@ const VexynMark3D = ({ isInView }: { isInView: boolean }) => {
 
 const VexynSymbol3D: React.FC<{ className?: string; size?: string }> = ({ className, size = '600px' }) => {
   const [isInView, setIsInView] = React.useState(false);
+  const [isMobile, setIsMobile] = React.useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 968);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   React.useEffect(() => {
     const observer = new IntersectionObserver(
@@ -172,13 +180,15 @@ const VexynSymbol3D: React.FC<{ className?: string; size?: string }> = ({ classN
     >
       <Canvas 
         camera={{ position: [0, 0, 10], fov: 50 }} 
-        gl={{ alpha: true, antialias: true }}
+        gl={{ alpha: true, antialias: !isMobile }}
         frameloop={isInView ? 'always' : 'never'} // HARD CUT ON RENDER
       >
         <VexynMark3D isInView={isInView} />
-        <EffectComposer enableNormalPass={false}>
-          <Bloom intensity={1.2} luminanceThreshold={1.1} luminanceSmoothing={0.5} radius={0.4} />
-        </EffectComposer>
+        {!isMobile && (
+          <EffectComposer enableNormalPass={false}>
+            <Bloom intensity={1.2} luminanceThreshold={1.1} luminanceSmoothing={0.5} radius={0.4} />
+          </EffectComposer>
+        )}
       </Canvas>
     </div>
   );

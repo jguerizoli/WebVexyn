@@ -73,16 +73,16 @@ body {
   font-family: var(--font-body);
 }
 
-body.is-desktop-hijack {
-  overflow: hidden; /* Lock scroll on desktop only */
+body.is-scroll-hijacked {
+  overflow: hidden; /* Lock scroll on all viewports when hijacked */
 }
 
 /* Hide scrollbar for a cleaner look when hijacking is active */
-body.is-desktop-hijack::-webkit-scrollbar {
+body.is-scroll-hijacked::-webkit-scrollbar {
   display: none;
 }
 
-body.is-desktop-hijack {
+body.is-scroll-hijacked {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }

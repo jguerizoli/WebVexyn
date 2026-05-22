@@ -86,3 +86,42 @@
   will-change: transform, opacity;
 }
 
+@media (max-width: 1023px) {
+  .section {
+    height: auto;
+    min-height: 100vh;
+    padding: 2.5rem var(--respiro-h) var(--respiro-v-xl);
+  }
+
+  .wrapper {
+    height: auto;
+    min-height: 100vh;
+    padding: 0;
+    gap: 2rem;
+  }
+
+  .stackContainer {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+    align-items: center;
+    overflow: visible;
+  }
+
+  .stackContainer > *:nth-child(n+3) {
+    display: none !important;
+  }
+
+  .resultsContent {
+    gap: 2rem;
+    width: 100%;
+  }
+
+  .ctaReveal {
+    opacity: 1; /* Let GSAP animate opacity on mobile */
+    margin-top: 1rem;
+  }
+}
+

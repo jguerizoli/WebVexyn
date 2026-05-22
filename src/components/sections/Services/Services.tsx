@@ -16,14 +16,7 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
   const { t } = useTranslation();
   const container = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
 
-  // Responsive listener for UI-only toggles
-  React.useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const SERVICES_DATA = [
     {
@@ -67,7 +60,35 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
   const cardsContainerRef = useRef<HTMLDivElement>(null);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  const goToCard = (index: number) => {
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    touchStartX.current = touch.clientX;
+    touchStartY.current = touch.clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    
+    const touch = e.changedTouches[0];
+    const diffX = touch.clientX - touchStartX.current;
+    const diffY = touch.clientY - touchStartY.current;
+    
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+      if (diffX > 0) {
+        handlePrev();
+      } else {
+        handleNext();
+      }
+    }
+    
+    touchStartX.current = null;
+    touchStartY.current = null;
+  };
+
+  const goToCard = (index: number, direction?: 'next' | 'prev') => {
     if (isAnimating || index === activeIndex) return;
     
     const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
@@ -79,12 +100,22 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
     setIsAnimating(true);
     setActiveIndex(index);
 
-    // Update counter text directly for performance
+    let dir = direction;
+    if (!dir) {
+      if (index === 0 && activeIndex === SERVICES_DATA.length - 1) {
+        dir = 'next';
+      } else if (index === SERVICES_DATA.length - 1 && activeIndex === 0) {
+        dir = 'prev';
+      } else {
+        dir = index > activeIndex ? 'next' : 'prev';
+      }
+    }
+
     const counterEl = document.getElementById('services-current');
     if (counterEl) counterEl.innerText = (index + 1).toString().padStart(2, '0');
+    const counterMobileEl = document.getElementById('services-current-mobile');
+    if (counterMobileEl) counterMobileEl.innerText = (index + 1).toString().padStart(2, '0');
 
-    // Adaptive Height Logic: Measure the content of the next card
-    // We set next to visibility: hidden and height: auto temporarily to measure
     gsap.set(next, { visibility: "hidden", display: "block", position: "relative" });
     const nextHeight = next.offsetHeight;
     gsap.set(next, { visibility: "visible", display: "block", position: "absolute" });
@@ -93,16 +124,17 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
       onComplete: () => setIsAnimating(false)
     });
 
-    // Animate the container height to fit the next card
     tl.to(cardsContainerRef.current, {
       height: nextHeight,
       duration: 0.6,
       ease: "power2.inOut"
     }, 0);
 
-    // 1. Transition Out Previous
+    const currentExitX = dir === 'next' ? -20 : 20;
+    const nextStartX = dir === 'next' ? 20 : -20;
+
     tl.to(current, {
-      yPercent: -5,
+      xPercent: currentExitX,
       opacity: 0,
       duration: 0.6,
       ease: "power2.inOut",
@@ -110,11 +142,10 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
       zIndex: 10
     }, 0);
 
-    // 2. Transition In Next
     tl.fromTo(next,
-      { yPercent: 5, opacity: 0, zIndex: 50 },
+      { xPercent: nextStartX, opacity: 0, zIndex: 50 },
       { 
-        yPercent: 0, 
+        xPercent: 0, 
         opacity: 1, 
         duration: 0.6, 
         ease: "power2.inOut",
@@ -123,7 +154,6 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
       "-=0.4"
     );
 
-    // 3. Force Content Reveal (fixes the "incomplete" bug)
     const elements = {
       title: next.querySelector('h3'),
       subtitle: next.querySelector('p'),
@@ -131,40 +161,45 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
       cta: next.querySelector('button')
     };
 
-    if (elements.title) tl.fromTo(elements.title, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 }, "-=0.6");
-    if (elements.subtitle) tl.fromTo(elements.subtitle, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 }, "-=0.5");
-    if (elements.listItems.length) tl.fromTo(elements.listItems, { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.05 }, "-=0.4");
-    if (elements.cta) tl.fromTo(elements.cta, { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4 }, "-=0.3");
+    if (elements.title) tl.fromTo(elements.title, { x: dir === 'next' ? 20 : -20, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4 }, "-=0.6");
+    if (elements.subtitle) tl.fromTo(elements.subtitle, { x: dir === 'next' ? 15 : -15, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4 }, "-=0.5");
+    if (elements.listItems.length) tl.fromTo(elements.listItems, { x: dir === 'next' ? 10 : -10, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, stagger: 0.05 }, "-=0.4");
+    if (elements.cta) tl.fromTo(elements.cta, { x: dir === 'next' ? 10 : -10, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4 }, "-=0.3");
   };
 
   const handlePrev = () => {
     const prev = (activeIndex - 1 + SERVICES_DATA.length) % SERVICES_DATA.length;
-    goToCard(prev);
+    goToCard(prev, 'prev');
   };
 
   const handleNext = () => {
     const next = (activeIndex + 1) % SERVICES_DATA.length;
-    goToCard(next);
+    goToCard(next, 'next');
   };
 
   useGSAP(() => {
     const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
     
-    // Initial State: Only first card visible, others staged
-    gsap.set(cards, { opacity: 0, yPercent: 10, pointerEvents: "none", zIndex: 10 });
-    gsap.set(cards[0], { opacity: 1, yPercent: 0, pointerEvents: "auto", zIndex: 50 });
+    gsap.set(cards, { opacity: 0, xPercent: 20, pointerEvents: "none", zIndex: 10 });
+    gsap.set(cards[0], { opacity: 1, xPercent: 0, pointerEvents: "auto", zIndex: 50 });
 
-    // Master Anchor for the Global Scroll Manager
     ScrollTrigger.create({
       trigger: container.current,
       id: "services",
       start: "top top",
-      pin: false // Single stop section
+      pin: false
     });
 
-    // Set initial container height to match first card
     if (cardsContainerRef.current && cards[0]) {
       gsap.set(cardsContainerRef.current, { height: cards[0].offsetHeight });
+
+      if (typeof document !== 'undefined' && document.fonts) {
+        document.fonts.ready.then(() => {
+          if (cardsContainerRef.current && cards[0]) {
+            gsap.set(cardsContainerRef.current, { height: cards[0].offsetHeight });
+          }
+        });
+      }
     }
 
   }, { scope: container });
@@ -178,7 +213,8 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
             <span className={styles.titleLine2}>{t('services.title2')}</span>
           </h2>
           
-          <div className={styles.indicator}>
+          {/* Desktop Indicator */}
+          <div className={`${styles.indicator} ${styles.desktopOnlyIndicator}`}>
             <div className={styles.counter}>
               <span className={styles.currentNum} id="services-current">{(activeIndex + 1).toString().padStart(2, '0')}</span>
               <span className={styles.separator}>/</span>
@@ -190,8 +226,7 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
                 <div className={styles.progressFill} id="services-progress" style={{ 
                   transform: `scaleX(${activeIndex / (SERVICES_DATA.length - 1)})`,
                   transformOrigin: 'left',
-                  transition: 'transform 0.5s cubic-bezier(0.19, 1, 0.22, 1)',
-                  display: isDesktop ? 'block' : 'none'
+                  transition: 'transform 0.5s cubic-bezier(0.19, 1, 0.22, 1)'
                 }} />
               </div>
               
@@ -211,12 +246,38 @@ const Services: React.FC<ServicesProps> = ({ scrollTo }) => {
           </div>
         </header>
  
-        <div ref={cardsContainerRef} className={styles.cardsContainer}>
+        <div 
+          ref={cardsContainerRef} 
+          className={styles.cardsContainer}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           {SERVICES_DATA.map((service, i) => (
             <div key={service.id} ref={(el) => { cardsRef.current[i] = el; }} className={styles.stackCard}>
               <ServiceCard service={service} index={i + 1} onCtaClick={() => scrollTo('contact-form')} />
             </div>
           ))}
+        </div>
+
+        {/* Mobile Indicator */}
+        <div className={`${styles.indicator} ${styles.mobileOnlyIndicator}`}>
+          <button onClick={handlePrev} className={styles.navBtn} aria-label="Previous">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M19 12H5M11 18l-6-6 6-6" />
+            </svg>
+          </button>
+          
+          <div className={styles.counter}>
+            <span className={styles.currentNum} id="services-current-mobile">{(activeIndex + 1).toString().padStart(2, '0')}</span>
+            <span className={styles.separator}>/</span>
+            <span className={styles.totalNum}>{SERVICES_DATA.length.toString().padStart(2, '0')}</span>
+          </div>
+          
+          <button onClick={handleNext} className={styles.navBtn} aria-label="Next">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M5 12h14M13 18l6-6-6-6" />
+            </svg>
+          </button>
         </div>
       </div>
     </section>

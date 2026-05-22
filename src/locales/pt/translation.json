@@ -5,6 +5,12 @@
     "partners": "Parceiros",
     "contact": "Contato"
   },
+  "whatsapp_modal": {
+    "title": "WHATSAPP",
+    "message": "Que bom que quer falar com a gente! Vamos te levar para o nosso WhatsApp para começarmos a conversar.",
+    "cancel": "CANCELAR",
+    "confirm": "VAMOS CONVERSAR!"
+  },
   "hero": {
     "title1": "design + código",
     "title2": "mude o\nfuturo",

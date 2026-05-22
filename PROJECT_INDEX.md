@@ -17,7 +17,6 @@ This document provides a comprehensive technical index of the Vexyn codebase, se
 
 ```text
 VEXYN_PROD/
-├── .gemini/             # AI Brain & Knowledge Items
 ├── backstage/           # Internal tools, scripts, and documentation
 ├── public/              # Static assets (fonts, textures, icons)
 ├── src/                 # Main Source Code

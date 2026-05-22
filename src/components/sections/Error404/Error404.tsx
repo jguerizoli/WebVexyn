@@ -12,8 +12,6 @@ const Error404: React.FC = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // For now, just clear or log. In a real app, this would filter or redirect.
-    console.log('Searching for:', searchQuery);
     setSearchQuery('');
   };
 

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -37,6 +37,8 @@ const MarqueeRow: React.FC<{
     const contentWidth = content.offsetWidth;
     const items = wrapper.querySelectorAll(`.${styles.marqueeContent}`);
 
+    let isStyled = false;
+
     const animation = gsap.to(items, {
       x: row.direction < 0 ? `-=${contentWidth}` : `+=${contentWidth}`,
       duration: contentWidth / row.speed,
@@ -48,11 +50,22 @@ const MarqueeRow: React.FC<{
         this.timeScale(totalMultiplier);
         
         // Dynamic Skewing based on motion
-        gsap.set(wrapper, { 
-          skewX: scrollSkew.current * 0.1,
-          rotateY: scrollSkew.current * 0.05,
-          z: Math.abs(scrollSkew.current) * 2
-        });
+        const skew = scrollSkew.current;
+        if (skew !== 0) {
+          gsap.set(wrapper, { 
+            skewX: skew * 0.1,
+            rotateY: skew * 0.05,
+            z: Math.abs(skew) * 2
+          });
+          isStyled = true;
+        } else if (isStyled) {
+          gsap.set(wrapper, { 
+            skewX: 0,
+            rotateY: 0,
+            z: 0
+          });
+          isStyled = false;
+        }
       }
     });
 
@@ -84,7 +97,6 @@ export default function Partners() {
   const sectionRef = useRef<HTMLElement>(null);
   const globalSpeedMultiplier = useRef(1);
   const scrollSkew = useRef(0);
-  const lastScrollY = useRef(0);
 
   useGSAP(() => {
     // 1. Mouse Velocity Logic

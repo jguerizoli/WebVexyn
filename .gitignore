@@ -25,3 +25,11 @@ dist-ssr
 
 # Test results
 test-results/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Development scratch files
+scratch/

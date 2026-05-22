@@ -150,7 +150,7 @@
 @media (max-width: 900px) {
   .section {
     perspective: 1000px;
-    padding: 15vw 0;
+    padding: 2.5rem 0 var(--respiro-v-xl);
   }
   
   .marqueeRow:nth-child(n) {

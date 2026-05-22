@@ -1,5 +1,5 @@
 .card {
-  position: absolute;
+  position: relative;
   width: 100% !important;
   box-sizing: border-box !important;
   height: auto;
@@ -185,7 +185,7 @@
   .card {
     padding: 2.5rem;
     height: auto;
-    min-height: 480px; /* Essential to match container height */
+    min-height: auto;
   }
   
   .bottomSection {

@@ -1,9 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useRef, lazy, Suspense } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useTranslation } from 'react-i18next';
-import VexynSymbol3D from '../../common/VexynSymbol/VexynSymbol3D';
+const VexynSymbol3D = lazy(() => import('../../common/VexynSymbol/VexynSymbol3D'));
 import Button from '../../common/Button/Button';
 import styles from './Hero.module.css';
 import { HERO_CONFIG } from './hero.config';
@@ -77,7 +77,21 @@ const Hero: React.FC<HeroProps> = ({ scrollTo }) => {
       <div className={styles.heroContainer}>
         <div className={styles.heroContent}>
           <h1 className={styles.heroTitle}>
-            <span className={styles.titleLine1}>{t('hero.title1')}</span>
+            <span className={styles.titleLine1}>
+              {t('hero.title1').split(' + ').map((part, index) => (
+                <React.Fragment key={index}>
+                  {index > 0 && <br className={styles.mobileOnlyBr} />}
+                  {index > 0 ? (
+                    part
+                  ) : (
+                    <>
+                      {part}
+                      <span className={styles.desktopSpace}> </span>+
+                    </>
+                  )}
+                </React.Fragment>
+              ))}
+            </span>
             <span className={styles.accent}>{t('hero.title2')}</span>
           </h1>
           
@@ -109,10 +123,12 @@ const Hero: React.FC<HeroProps> = ({ scrollTo }) => {
 
       {/* Hero Symbol: Anchored Right (3D Shader Version) */}
       <div className={styles.heroSymbolWrapper}>
-        <VexynSymbol3D 
-          size="600px" 
-          className={styles.heroSymbol} 
-        />
+        <Suspense fallback={null}>
+          <VexynSymbol3D 
+            size="600px" 
+            className={styles.heroSymbol} 
+          />
+        </Suspense>
       </div>
     </section>
   );

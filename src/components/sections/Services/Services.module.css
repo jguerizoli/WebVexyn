@@ -33,6 +33,7 @@
   line-height: var(--lh-mega);
   display: flex;
   flex-direction: column;
+  margin: 0; /* Clear default browser margins */
 }
 
 .titleLine1 {
@@ -78,39 +79,6 @@
   will-change: clip-path, opacity, transform, filter;
 }
 
-@media (max-width: 1100px) {
-  .grid {
-    grid-template-columns: 1fr;
-    gap: 4rem;
-  }
-  
-  .header {
-    position: relative;
-    top: 0;
-  }
-
-  .indicator {
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .progressBar {
-    width: 100px;
-  }
-
-  .cardsContainer {
-    height: 540px; /* Increased to accommodate 480px cards + padding */
-    overflow: visible; /* Allow mobile cards to breathe */
-  }
-
-  .stackCard {
-    height: 480px; /* Match mobile ServiceCard min-height */
-    top: 0;
-  }
-}
 
 .indicator {
   margin-top: 2rem;
@@ -119,13 +87,21 @@
   gap: 1rem;
 }
 
+.desktopOnlyIndicator {
+  /* Inherits from .indicator */
+}
+
+.mobileOnlyIndicator {
+  display: none !important;
+}
+
 .counter {
-  font-family: var(--font-main);
+  font-family: var(--font-mono);
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .currentNum {
@@ -138,7 +114,7 @@
 
 .totalNum {
   color: rgba(255, 255, 255, 0.4);
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .progressContainer {
@@ -228,3 +204,87 @@
   background-color: #fff;
   width: 60px;
 }
+
+@media (max-width: 1023px) {
+  .section {
+    padding-top: 2.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    row-gap: 1rem; /* Reduce spacing between title and card */
+    align-items: stretch;
+    align-content: start;
+  }
+  
+  .header {
+    position: relative;
+    top: 0;
+  }
+
+  .indicator {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center; /* Center horizontally on mobile */
+    gap: 2rem;
+  }
+
+  .desktopOnlyIndicator {
+    display: none !important;
+  }
+
+  .mobileOnlyIndicator {
+    display: flex !important;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .progressContainer {
+    margin-top: 0; /* Remove top offset to align indicator elements vertically */
+  }
+
+  .progressBar {
+    display: none !important;
+  }
+
+  .cardsContainer {
+    height: 350px;
+    min-height: auto;
+    overflow: visible; /* Allow mobile cards to breathe */
+  }
+
+  .stackCard {
+    height: auto;
+    top: 0;
+  }
+
+  .counter {
+    width: 80px;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .currentNum {
+    flex: 1;
+    text-align: right;
+    font-size: 1.25rem;
+  }
+
+  .separator {
+    width: 16px;
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  .totalNum {
+    flex: 1;
+    text-align: left;
+    font-size: 0.9rem;
+  }
+}
+

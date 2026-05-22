@@ -5,6 +5,12 @@
     "partners": "Partners",
     "contact": "Contact"
   },
+  "whatsapp_modal": {
+    "title": "WHATSAPP",
+    "message": "Great to see you here! We'll take you over to WhatsApp so we can start chatting.",
+    "cancel": "CANCEL",
+    "confirm": "LET'S CHAT!"
+  },
   "hero": {
     "title1": "design + code",
     "title2": "change the\nfuture",

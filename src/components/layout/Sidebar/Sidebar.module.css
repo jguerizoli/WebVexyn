@@ -115,7 +115,98 @@
   transform: translateX(0);
 }
 
+.desktopNav {
+  display: flex;
+}
+
+.mobileNav {
+  display: none;
+}
+
+.whatsappNavItem {
+  position: relative;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--vx-orange, #E5511A);
+  color: #050505;
+  border-radius: 0px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1), background-color 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.whatsappNavItem:hover {
+  background: #ff682e;
+  transform: scale(1.1);
+}
+
+.whatsappNavItem svg {
+  color: #050505;
+}
+
+.mobileHeader {
+  display: none;
+}
+
 @media (max-width: 968px) {
+  .mobileHeader {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 4.5rem;
+    background: rgba(5, 5, 5, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    z-index: 1000;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+  }
+
+  .mobileLogoBtn {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--vx-orange);
+  }
+
+  .mobileHeaderRight {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .socialMobileBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--vx-light-grey, #a0a0a0);
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .socialMobileBtn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .sidebarLogo {
+    display: none;
+  }
+
+  .bottomSection {
+    display: none;
+  }
+
   .markerSidebar {
     width: 100vw;
     height: 5rem;
@@ -125,24 +216,42 @@
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     flex-direction: row;
     padding: 0 2rem;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
   }
   
   .sidebarNav {
     flex-direction: row;
-    gap: 1.5rem;
+    gap: 2rem;
+  }
+
+  .desktopNav {
+    display: none;
+  }
+
+  .mobileNav {
+    display: flex;
   }
 
   .topSection {
     flex-direction: row;
     width: auto;
-  }
-
-  .bottomSection {
-    width: auto;
-    border-left: 1px solid rgba(255, 255, 255, 0.08);
-    margin-left: 1rem;
+    justify-content: center;
   }
   
   .sidebarNavLabel { display: none; }
+
+  .isActive {
+    border-left: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
+  }
+
+  .isActive::after {
+    left: 15%;
+    top: auto;
+    bottom: 0;
+    width: 70%;
+    height: 2px;
+  }
 }

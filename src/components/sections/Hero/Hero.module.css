@@ -40,6 +40,14 @@
   white-space: nowrap; /* Prevent "CÓDIGO" from wrapping alone */
 }
 
+.mobileOnlyBr {
+  display: none;
+}
+
+.desktopSpace {
+  display: inline;
+}
+
 .accent {
   display: block;
   color: var(--vx-orange);
@@ -101,19 +109,88 @@
 
 @media (max-width: 968px) {
   .heroSection {
-    padding: 12rem 5%;
+    padding: 7rem 5% 6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .heroContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .heroContent {
+    max-width: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: -6.5rem; /* Shift upwards to balance the 3D symbol watermark and header spacing */
   }
   
   .heroTitle {
-    line-height: var(--lh-mega);
+    font-size: clamp(2.8rem, 11vw, 4.2rem);
+    line-height: 1.05;
+    text-align: center;
+  }
+
+  .titleLine1 {
+    white-space: normal;
+  }
+
+  .mobileOnlyBr {
+    display: inline;
+  }
+
+  .desktopSpace {
+    display: none;
+  }
+
+  .heroSubtitleWrapper {
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 2.5rem;
+  }
+
+  .heroLine {
+    display: none;
+  }
+
+  .heroSubtitle {
+    font-size: clamp(0.95rem, 3.5vw, 1.25rem);
+    text-align: center;
+    line-height: 1.4;
+    letter-spacing: 0.15em;
   }
   
   .heroActions {
     flex-direction: column;
     width: 100%;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+
+  .heroActions > button {
+    width: 100% !important;
+    max-width: 22rem;
+  }
+  
+  .heroSymbolWrapper {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    opacity: 0.12;
+    z-index: 1;
   }
   
   .heroSymbol {
-    width: 300px !important;
+    width: 380px !important;
   }
 }

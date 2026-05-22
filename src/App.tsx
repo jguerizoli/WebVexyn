@@ -22,6 +22,7 @@ gsap.registerPlugin(ScrollToPlugin, ScrollTrigger, Observer);
 function App() {
   const [activeSection, setActiveSection] = useState('hero');
   const isNavigating = useRef(false);
+  const isClickNavigating = useRef(false);
   const location = useLocation();
   const navigate = useNavigate();
   const isHome = location.pathname === '/';
@@ -45,9 +46,24 @@ function App() {
   useGSAP(() => {
     if (!isHome) return;
 
-    const sections = ['hero', 'services', 'social-proof', 'partners', 'contact-form', 'site-footer'];
-    const isMobile = window.innerWidth < 1024;
-    if (isMobile) return;
+    const isMobileDevice = window.innerWidth <= 968;
+    const sections = isMobileDevice
+      ? ['hero', 'services', 'social-proof', 'contact-form', 'site-footer']
+      : ['hero', 'services', 'social-proof', 'partners', 'contact-form', 'site-footer'];
+
+    // Track active section on both mobile and desktop
+    sections.forEach(id => {
+      ScrollTrigger.create({
+        trigger: `#${id}`,
+        start: "top 50%",
+        end: "bottom 50%",
+        onToggle: (self) => {
+          if (self.isActive && !isClickNavigating.current) {
+            setActiveSection(id);
+          }
+        }
+      });
+    });
 
     let isAnimating = false;
 
@@ -65,28 +81,44 @@ function App() {
 
     setTimeout(() => { ScrollTrigger.refresh(); }, 200);
 
+    let cachedSnapPoints: number[] = [];
+
     const getSnapPoints = () => {
+      if (cachedSnapPoints.length > 0) return cachedSnapPoints;
       const points: number[] = [];
+      
+      const isMobileDevice = window.innerWidth <= 968;
+      const mobileHeader = document.querySelector('[class*="mobileHeader"]');
+      const headerHeight = mobileHeader ? mobileHeader.getBoundingClientRect().height : 72;
+      const offsetY = isMobileDevice ? headerHeight : 0;
+
       sections.forEach(id => {
         const anchor = ScrollTrigger.getById(`anchor-${id}`);
         const main = ScrollTrigger.getById(id);
-        if (anchor) points.push(Math.round(anchor.start));
+        if (anchor) points.push(Math.max(0, Math.round(anchor.start - offsetY)));
         if (main) {
-          if (main.vars.pin) points.push(Math.round(main.end));
+          if (main.vars.pin) points.push(Math.max(0, Math.round(main.end - offsetY)));
           if (main.vars.snap) {
             const snapVal = typeof main.vars.snap === 'number' ? main.vars.snap : (main.vars.snap as any).snapTo || 0;
             if (snapVal > 0 && snapVal < 1) {
               const steps = Math.round(1 / snapVal);
               const range = main.end - main.start;
               for (let i = 1; i < steps; i++) {
-                points.push(Math.round(main.start + range * (i * snapVal)));
+                points.push(Math.max(0, Math.round(main.start + range * (i * snapVal) - offsetY)));
               }
             }
           }
         }
       });
-      return [...new Set(points)].sort((a, b) => a - b);
+      cachedSnapPoints = [...new Set(points)].sort((a, b) => a - b);
+      return cachedSnapPoints;
     };
+
+    const handleRefreshEvent = () => {
+      cachedSnapPoints = [];
+    };
+
+    ScrollTrigger.addEventListener("refresh", handleRefreshEvent);
 
     const gotoPoint = (direction: number) => {
       if (isAnimating || isNavigating.current) return;
@@ -113,10 +145,8 @@ function App() {
           duration: 1.15, 
           ease: "expo.out", 
           overwrite: true,
-          onUpdate: () => ScrollTrigger.update(),
           onComplete: cleanup,
-          onInterrupt: cleanup,
-          onOverwrite: cleanup
+          onInterrupt: cleanup
         });
       }
     };
@@ -124,10 +154,16 @@ function App() {
     const obs = Observer.create({
       type: "wheel,touch,pointer",
       onDown: (self) => {
-        if (Math.abs(self.deltaY) > 20) gotoPoint(1);
+        if (Math.abs(self.deltaY) > 20) {
+          const isWheel = !self.event || self.event.type.includes('wheel') || self.event.type.includes('mousewheel');
+          gotoPoint(isWheel ? 1 : -1);
+        }
       },
       onUp: (self) => {
-        if (Math.abs(self.deltaY) > 20) gotoPoint(-1);
+        if (Math.abs(self.deltaY) > 20) {
+          const isWheel = !self.event || self.event.type.includes('wheel') || self.event.type.includes('mousewheel');
+          gotoPoint(isWheel ? -1 : 1);
+        }
       },
       tolerance: 25
     });
@@ -140,23 +176,14 @@ function App() {
           start: "top top"
         });
       }
-      ScrollTrigger.create({
-        trigger: `#${id}`,
-        start: "top 40%",
-        end: "bottom 40%",
-        onToggle: (self) => {
-          if (self.isActive && !isNavigating.current) {
-            setActiveSection(id);
-          }
-        }
-      });
     });
 
-    document.body.classList.add('is-desktop-hijack');
+    document.body.classList.add('is-scroll-hijacked');
 
     return () => {
       obs.kill();
-      document.body.classList.remove('is-desktop-hijack');
+      ScrollTrigger.removeEventListener("refresh", handleRefreshEvent);
+      document.body.classList.remove('is-scroll-hijacked');
     };
   }, [isHome]);
 
@@ -166,34 +193,42 @@ function App() {
       return;
     }
 
-    ScrollTrigger.refresh();
     const element = document.getElementById(id);
     if (!element) return;
 
     const { scrolling } = APP_CONFIG;
     const cleanup = () => {
       isNavigating.current = false;
+      isClickNavigating.current = false;
       document.body.classList.remove('is-navigating');
       ScrollTrigger.refresh();
     };
 
+    const isMobile = window.innerWidth <= 968;
+    const mobileHeader = document.querySelector('[class*="mobileHeader"]');
+    const headerHeight = mobileHeader ? mobileHeader.getBoundingClientRect().height : 72;
+    const offsetY = isMobile ? headerHeight : 0;
+
+    const anchor = ScrollTrigger.getById(`anchor-${id}`);
+    const targetScroll = (!isMobile && anchor) ? anchor.start : `#${id}`;
+
     gsap.to(window, {
       duration: scrolling.duration,
       scrollTo: {
-        y: `#${id}`,
+        y: targetScroll,
+        offsetY: offsetY,
         autoKill: scrolling.autoKill
       },
       ease: scrolling.ease,
       overwrite: true,
       onStart: () => {
         isNavigating.current = true;
+        isClickNavigating.current = true;
         document.body.classList.add('is-navigating');
         setActiveSection(id);
       },
-      onUpdate: () => ScrollTrigger.update(),
       onComplete: cleanup,
-      onInterrupt: cleanup,
-      onOverwrite: cleanup
+      onInterrupt: cleanup
     });
   };
 
