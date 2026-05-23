@@ -33,3 +33,9 @@ test-results/
 
 # Development scratch files
 scratch/
+
+# AI Context & Design guidelines
+CONTEXT.md
+DESIGN.md
+PROJECT_INDEX.md
+
