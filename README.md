@@ -30,6 +30,9 @@ npm install
 
 ## Project Architecture
 
-The project follows a modular architecture based on the International Typographic Style (Swiss Grid). For a detailed breakdown of the file structure and component hierarchy, see [PROJECT_INDEX.md](./PROJECT_INDEX.md).
+The project follows a modular architecture based on the International Typographic Style (Swiss Grid).
 
-Design specifications and philosophy are documented in [DESIGN.md](./DESIGN.md).
+- **Structure**: Core components are located in `src/components/`, split into `layout` (e.g., Sidebar, Footer) and `sections` (e.g., Hero, Services, Results).
+- **Layout & Styling**: Spacing systems and typographic scale are defined globally in `src/index.css` using HSL variables and clamp sizing.
+- **Animations**: Centered timeline controls and ScrollTrigger pinning are managed in `src/App.tsx`.
+
