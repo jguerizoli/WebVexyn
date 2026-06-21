@@ -1,0 +1,53 @@
+// Pipeline webvexyn-prod (branch main) — deploy MANUAL.
+// Configurar no Jenkins como "Pipeline script" (não SCM): cole este conteúdo.
+// O Dockerfile já clona o repo durante o build, então não há checkout aqui.
+pipeline {
+    agent any
+
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 10, unit: 'MINUTES')
+    }
+
+    environment {
+        COMPOSE_DIR = '/var/www/webvexyn/docker'
+        SERVICE     = 'webvexyn-prod'
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                sh 'docker compose --project-directory ${COMPOSE_DIR} --env-file ${COMPOSE_DIR}/.env -f ${COMPOSE_DIR}/docker-compose.yml build --no-cache ${SERVICE}'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'docker compose --project-directory ${COMPOSE_DIR} --env-file ${COMPOSE_DIR}/.env -f ${COMPOSE_DIR}/docker-compose.yml up -d ${SERVICE}'
+            }
+        }
+        stage('Health Check') {
+            steps {
+                // Espera o container ficar "healthy" (healthcheck do compose).
+                sh '''
+                    for i in $(seq 1 12); do
+                        status=$(docker inspect --format='{{.State.Health.Status}}' ${SERVICE} 2>/dev/null || echo "unknown")
+                        echo "Tentativa $i: ${SERVICE} -> $status"
+                        [ "$status" = "healthy" ] && exit 0
+                        sleep 5
+                    done
+                    echo "Container não ficou healthy a tempo"; exit 1
+                '''
+            }
+        }
+        stage('Cleanup') {
+            steps {
+                sh 'docker image prune -f'
+            }
+        }
+    }
+
+    post {
+        success { echo "Deploy de ${SERVICE} concluído com sucesso." }
+        failure { echo "Falha no deploy de ${SERVICE} — checar logs." }
+    }
+}
