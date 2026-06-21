@@ -86,7 +86,7 @@ const Hero: React.FC<HeroProps> = ({ scrollTo }) => {
                   ) : (
                     <>
                       {part}
-                      <span className={styles.desktopSpace}> </span>+
+                      <span className={styles.desktopSpace}> </span>+<span className={styles.desktopSpace}> </span>
                     </>
                   )}
                 </React.Fragment>
@@ -124,8 +124,8 @@ const Hero: React.FC<HeroProps> = ({ scrollTo }) => {
       {/* Hero Symbol: Anchored Right (3D Shader Version) */}
       <div className={styles.heroSymbolWrapper}>
         <Suspense fallback={null}>
-          <VexynSymbol3D 
-            size="600px" 
+          <VexynSymbol3D
+            size="897px"
             className={styles.heroSymbol} 
           />
         </Suspense>

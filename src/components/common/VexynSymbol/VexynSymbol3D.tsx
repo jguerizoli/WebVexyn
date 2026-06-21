@@ -176,7 +176,7 @@ const VexynSymbol3D: React.FC<{ className?: string; size?: string }> = ({ classN
     <div 
       ref={containerRef} 
       className={className} 
-      style={{ width: size, height: '400px', background: 'transparent' }}
+      style={{ width: size, height: '598px', background: 'transparent' }}
     >
       <Canvas 
         camera={{ position: [0, 0, 10], fov: 50 }} 
