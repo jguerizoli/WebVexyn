@@ -1,0 +1,21 @@
+# Jenkins Configuration as Code (JCasC) — WebVexyn
+# Carregado via env CASC_JENKINS_CONFIG. Segredos vêm de variáveis de ambiente
+# (definidas no docker/.env, NÃO commitado). Os jobs/pipelines são criados via
+# REST API (config.xml gerado a partir dos Jenkinsfile.prod/.dev).
+jenkins:
+  systemMessage: "WebVexyn CI/CD — configurado via JCasC. Deploys manuais (Build Now)."
+  numExecutors: 2
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "${JENKINS_ADMIN_USER}"
+          password: "${JENKINS_ADMIN_PASSWORD}"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+
+unclassified:
+  location:
+    url: "https://jenkins.vexynlab.com.br/"
+    adminAddress: "gutierre.contato@gmail.com"
